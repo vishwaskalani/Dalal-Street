@@ -1,0 +1,11 @@
+site_name: Dalal Street Notes
+nav:
+  - Home: index.md
+  - About: about.md
+  - Daily Notes:
+      - Sample Log: daily-notes/2025-07-13.md
+  - Reading Notes:
+      - Investing: reading-notes/investment_fundamentals.md
+docs_dir: docs
+site_dir: site
+theme: material
