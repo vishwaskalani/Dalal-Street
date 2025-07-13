@@ -3,7 +3,7 @@ nav:
   - Home: index.md
   - About: about.md
   - Daily Notes:
-      - Sample Log: daily-notes/2025-07-13.md
+      - Log1: daily-notes/2025-07-13.md
   - Reading Notes:
       - Investing: reading-notes/investment_fundamentals.md
 docs_dir: docs
