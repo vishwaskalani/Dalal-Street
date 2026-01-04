@@ -1,0 +1,32 @@
+1. Making a back testing framework
+
+ I am an equity researcher. I work in indian stock market.
+
+I want to test some of my investement strategies in a older time frame like 10 years back or 5 years back.
+
+For that i want to make a BackTesting framework. The current design of framework that i want is simple. Right now my investment horizon doesn't want me to look at stock prices in a smaller time frame. Therefore daily stock prices are enough for me. What i want is that my python frameowork should take input from a file in the same folder called Stocks.txt In that file, I will have the name of the tickers, amount invested in inr with new line separations for example
+
+
+BSE,10000
+
+BHARTIARTL,100000
+
+
+In another file Timeframes.txt, I will have 2 parameter values written
+
+
+StartDate : "01-01-2020"
+
+DurationInMonths: 38
+
+
+This represents the start time of the investment and the time period after which i want to monitor returns.
+
+
+As a result of this input, I want a detailed report from my BackTesting framework, that is the overall return of my portfolio, individual stock returns, best and worst performing stocks.
+
+
+Important : For me again mentioning that daily prices matter. So let us say on the start date the high price of BSE was 2000 and low was 1900 so you can take my buy price as 1950 as average. Same concept for the sell price. Also since i am mentioning the invested amount which might not be a multiple of stock purchase price. You are allowed to consider fractional stock purchases as well which in real are not allowed in indian stock market.
+
+
+Make a BackTester.py 
