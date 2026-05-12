@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Optional
+from typing import Optional, Any
 
 
 @dataclass
@@ -22,6 +22,36 @@ class Peer:
             f"{self.name:<30}  Price: {self.current_price or '—':>10}  "
             f"PE: {self.pe_ratio or '—':>8}  MCap: {self.market_cap or '—':>12}"
         )
+
+
+@dataclass
+class ScreenStock:
+    name: str
+    url: str                           # screener.in relative URL e.g. /company/INFY/
+    metrics: dict[str, Any] = field(default_factory=dict)  # header → value, varies per screen
+
+    def __str__(self) -> str:
+        metrics_str = "  ".join(f"{k}: {v}" for k, v in self.metrics.items())
+        return f"{self.name:<35}  {metrics_str}"
+
+
+@dataclass
+class ScreenResult:
+    screen_name: str                   # human-readable name parsed from page title
+    screen_url: str
+    headers: list[str]                 # ordered column names
+    stocks: list[ScreenStock]
+
+    def __str__(self) -> str:
+        lines = [
+            f"Screen — {self.screen_name}",
+            f"URL    : {self.screen_url}",
+            f"{'—' * 70}",
+        ]
+        lines += [str(s) for s in self.stocks]
+        lines.append(f"{'—' * 70}")
+        lines.append(f"Total: {len(self.stocks)} stocks")
+        return "\n".join(lines)
 
 
 @dataclass

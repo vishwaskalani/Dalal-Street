@@ -97,6 +97,59 @@ for peer in table.peers:
 
 ---
 
+## Screens
+
+Fetches every stock from a screener.in **screen** (saved query/filter) — handles pagination automatically so you always get the full list in one call.
+
+### Command line
+
+```bash
+python3 run_screen.py "https://www.screener.in/screens/3655407/good-results-debt-free/"
+```
+
+**Example output:**
+```
+Screen — Good Results Debt Free
+URL    : https://www.screener.in/screens/3655407/good-results-debt-free/
+----------------------------------------------------------------------
+Tips Music                           CMP Rs.: 641.80  P/E: 37.85  Mar Cap Rs.Cr.: 8204.23  ...
+Sanofi Consumer                      CMP Rs.: 4611.90  P/E: 42.01  Mar Cap Rs.Cr.: 10621.49  ...
+...
+----------------------------------------------------------------------
+Total: 48 stocks
+```
+
+### In your own script
+
+```python
+from screener import ScreenerClient, screens
+
+client = ScreenerClient()  # reads .env automatically
+
+url = "https://www.screener.in/screens/3655407/good-results-debt-free/"
+result = screens.fetch(client, url)
+
+# Pretty print
+print(result)
+
+# Iterate over stocks
+for stock in result.stocks:
+    print(stock.name, stock.url)
+    print(stock.metrics.get("P/E"), stock.metrics.get("ROCE %"))
+```
+
+### `ScreenStock` fields
+
+| Field | Description |
+|---|---|
+| `name` | Company name |
+| `url` | screener.in relative URL |
+| `metrics` | Dict of all columns → values (varies per screen) |
+
+Since each screen has user-defined columns, all metric values live in `stock.metrics` keyed by the exact column header (e.g. `"CMP Rs."`, `"P/E"`, `"ROCE %"`). Use `result.headers` to see the full ordered list of columns for a given screen.
+
+---
+
 ## Adding a new utility
 
 1. Create `screener/<utility_name>.py`
