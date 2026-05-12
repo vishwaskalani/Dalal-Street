@@ -1,0 +1,22 @@
+- Making a module called ConcentratedIndex in my project called AI mutual fund
+
+- This is an intelligent inveting project
+
+- From this module, I want a framework which is very simple yet powerful.
+
+- I will write a file "sector.txt"
+
+- Which will be of format -> first line sector name, second line onwards ticker names i want to include
+
+HOTELS
+INDHOTEL
+LEMONTREE
+ITCHOTELS
+
+- What i want is a framework to visualize these indexes on how they are doing in various timeframe settings
+
+- They should be updated live during market hours.
+
+- I will have multiple such files prepared like "sector1.txt", "sector2.txt",....and so on.
+
+- The framework should be able to give me option to visualize all of them.

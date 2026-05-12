@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConcentratedIndex — AI Mutual Fund</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:       #070b14;
+      --surf:     #0d1220;
+      --surf2:    #141927;
+      --border:   #1c2337;
+      --accent:   #f0a500;
+      --acc-bg:   rgba(240,165,0,.1);
+      --green:    #00c9a7;
+      --red:      #ff4757;
+      --text:     #dce1f0;
+      --muted:    #5a6585;
+      --mono:     'IBM Plex Mono', monospace;
+      --head:     'Syne', sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 13px;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      background: var(--surf);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo {
+      font-family: var(--head);
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+    .logo em { color: var(--accent); font-style: normal; }
+    .logo-sub { color: var(--muted); font-family: var(--mono); font-size: 12px; font-weight: 400; margin-left: 10px; }
+    .hdr-right { display: flex; align-items: center; gap: 20px; }
+    #clock { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; letter-spacing: .04em; }
+    .mkt-badge { display: flex; align-items: center; gap: 6px; font-size: 11px; color: var(--muted); letter-spacing: .06em; }
+    .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); flex-shrink: 0; }
+    .dot.live { background: var(--green); animation: blink 2s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── UPLOAD ── */
+    .upload-wrap { padding: 24px 28px 0; }
+    #drop-zone {
+      border: 1px dashed var(--border);
+      border-radius: 10px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color .2s, background .2s;
+      background: var(--surf);
+    }
+    #drop-zone:hover, #drop-zone.over { border-color: var(--accent); background: var(--acc-bg); }
+    #drop-zone .dz-icon { font-size: 26px; margin-bottom: 8px; }
+    #drop-zone .dz-main { color: var(--text); margin-bottom: 4px; }
+    #drop-zone .dz-sub { font-size: 11px; color: var(--muted); }
+    #file-input { display: none; }
+
+    .file-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+    .ftag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 4px; padding: 4px 10px; font-size: 11px;
+    }
+    .ftag .rm { cursor: pointer; color: var(--muted); font-size: 15px; line-height: 1; }
+    .ftag .rm:hover { color: var(--red); }
+
+    /* ── CONTROLS BAR ── */
+    .ctrl-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 28px 16px;
+    }
+    .tf-tabs {
+      display: flex;
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .tf-btn {
+      padding: 7px 15px;
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      transition: background .12s, color .12s;
+    }
+    .tf-btn:hover { color: var(--text); background: var(--surf2); }
+    .tf-btn.active { background: var(--accent); color: #000; font-weight: 600; }
+
+    .ctrl-right { display: flex; align-items: center; gap: 10px; }
+    .icon-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 13px;
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: border-color .15s, color .15s;
+    }
+    .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .spin { animation: spinning .6s linear infinite; display: inline-block; }
+    @keyframes spinning { to { transform: rotate(360deg); } }
+
+    /* ── SECTORS GRID ── */
+    #sectors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 18px;
+      padding: 0 28px 40px;
+    }
+
+    .sector-card {
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .2s, transform .15s, box-shadow .2s;
+    }
+    .sector-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(240,165,0,.08);
+    }
+
+    .card-hdr {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+    }
+    .card-name { font-family: var(--head); font-size: 16px; font-weight: 700; }
+    .card-tickers { font-size: 10px; color: var(--muted); margin-top: 3px; letter-spacing: .03em; }
+    .card-chg { text-align: right; }
+    .card-chg .val { font-size: 20px; font-weight: 600; }
+    .card-chg .lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .card-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--border);
+    }
+    .stat { text-align: center; padding: 8px 4px; border-right: 1px solid var(--border); }
+    .stat:last-child { border-right: none; }
+    .stat .sl { font-size: 10px; color: var(--muted); }
+    .stat .sv { font-size: 13px; font-weight: 500; margin-top: 2px; }
+
+    .card-chart-wrap {
+      padding: 10px 14px 14px;
+      height: 88px;
+      position: relative;
+    }
+
+    .positive { color: var(--green); }
+    .negative { color: var(--red); }
+    .neutral  { color: var(--muted); }
+
+    /* loading state */
+    .card-loading {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: var(--muted); gap: 8px;
+    }
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spinning .6s linear infinite;
+    }
+
+    /* empty */
+    .empty-state {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+      color: var(--muted);
+    }
+    .empty-state .ei { font-size: 44px; margin-bottom: 14px; }
+
+    /* ── MODAL ── */
+    #modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.72);
+      z-index: 200;
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    #modal-overlay.open { display: flex; }
+
+    #modal-panel {
+      background: var(--surf);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: min(920px, 100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .modal-top {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: var(--surf); z-index: 1;
+    }
+    .modal-title { font-family: var(--head); font-size: 22px; font-weight: 800; }
+    .modal-tickers { font-size: 11px; color: var(--muted); margin-top: 3px; }
+    .modal-close {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surf2); border: 1px solid var(--border);
+      border-radius: 6px; cursor: pointer; font-size: 15px; color: var(--muted);
+      transition: color .15s, border-color .15s; flex-shrink: 0;
+    }
+    .modal-close:hover { color: var(--text); border-color: var(--text); }
+
+    .modal-tf-bar {
+      display: flex; gap: 8px;
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .mtf-btn {
+      padding: 5px 13px;
+      font-family: var(--mono); font-size: 12px;
+      border: 1px solid var(--border); border-radius: 4px;
+      background: none; color: var(--muted); cursor: pointer;
+      transition: all .12s;
+    }
+    .mtf-btn:hover { border-color: var(--accent); color: var(--accent); }
+    .mtf-btn.active { background: var(--accent); border-color: var(--accent); color: #000; font-weight: 600; }
+
+    /* summary row */
+    .modal-summary {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      background: var(--border);
+      gap: 1px;
+      border-bottom: 1px solid var(--border);
+    }
+    .sum-cell { background: var(--surf2); padding: 14px 20px; }
+    .sum-cell .sl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+    .sum-cell .sv { font-size: 20px; font-weight: 500; margin-top: 5px; }
+
+    /* main chart */
+    .modal-chart-area {
+      padding: 20px 24px;
+      height: 300px;
+      position: relative;
+    }
+    .no-data-msg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; color: var(--muted);
+    }
+    .modal-loading-msg {
+      position: absolute; inset: 0;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px; font-size: 13px; color: var(--muted);
+    }
+
+    /* components table */
+    .modal-comps { padding: 0 24px 24px; }
+    .comp-hdr {
+      font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .08em;
+      padding: 14px 0 10px;
+      border-top: 1px solid var(--border);
+    }
+    .comp-table { width: 100%; border-collapse: collapse; }
+    .comp-table th {
+      text-align: left; font-size: 10px; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .07em;
+      padding: 7px 10px; border-bottom: 1px solid var(--border);
+    }
+    .comp-table th:not(:first-child) { text-align: right; }
+    .comp-table td {
+      padding: 10px 10px; border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .comp-table td:not(:first-child) { text-align: right; }
+    .comp-table tr:last-child td { border-bottom: none; }
+    .comp-table tr:hover td { background: var(--surf2); }
+    .t-name { font-weight: 500; }
+    .t-price { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+    .bar-row { display: flex; align-items: center; gap: 7px; justify-content: flex-end; }
+    .perf-bar { height: 4px; border-radius: 2px; min-width: 2px; }
+
+    /* scrollbar */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    Concentrated<em>Index</em>
+    <span class="logo-sub">/ AI Mutual Fund</span>
+  </div>
+  <div class="hdr-right">
+    <div id="clock">--:--:-- IST</div>
+    <div class="mkt-badge">
+      <div class="dot" id="mkt-dot"></div>
+      <span id="mkt-label">CHECKING</span>
+    </div>
+  </div>
+</header>
+
+<!-- UPLOAD -->
+<div class="upload-wrap">
+  <div id="drop-zone">
+    <div class="dz-icon">📂</div>
+    <div class="dz-main">Drop <strong>sector .txt files</strong> here, or click to upload</div>
+    <div class="dz-sub">First line = sector name · Remaining lines = NSE tickers (no suffix needed)</div>
+    <input type="file" id="file-input" multiple accept=".txt">
+    <div class="file-tags" id="file-tags"></div>
+  </div>
+</div>
+
+<!-- CONTROLS BAR -->
+<div class="ctrl-bar">
+  <div class="tf-tabs" id="global-tf">
+    <button class="tf-btn" data-tf="1D">1D</button>
+    <button class="tf-btn" data-tf="1W">1W</button>
+    <button class="tf-btn active" data-tf="1M">1M</button>
+    <button class="tf-btn" data-tf="3M">3M</button>
+    <button class="tf-btn" data-tf="6M">6M</button>
+    <button class="tf-btn" data-tf="1Y">1Y</button>
+  </div>
+  <div class="ctrl-right">
+    <button class="icon-btn" id="refresh-btn">↻ Refresh All</button>
+  </div>
+</div>
+
+<!-- SECTORS GRID -->
+<div id="sectors-grid">
+  <div class="empty-state">
+    <div class="ei">📈</div>
+    <p>Upload your sector.txt files to get started</p>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div id="modal-overlay">
+  <div id="modal-panel">
+    <div class="modal-top">
+      <div>
+        <div class="modal-title" id="modal-title">—</div>
+        <div class="modal-tickers" id="modal-tickers">—</div>
+      </div>
+      <div class="modal-close" id="modal-close">✕</div>
+    </div>
+
+    <div class="modal-tf-bar" id="modal-tf">
+      <button class="mtf-btn" data-tf="1D">1D</button>
+      <button class="mtf-btn" data-tf="1W">1W</button>
+      <button class="mtf-btn active" data-tf="1M">1M</button>
+      <button class="mtf-btn" data-tf="3M">3M</button>
+      <button class="mtf-btn" data-tf="6M">6M</button>
+      <button class="mtf-btn" data-tf="1Y">1Y</button>
+    </div>
+
+    <div class="modal-summary">
+      <div class="sum-cell"><div class="sl">Index Level</div><div class="sv" id="m-level">—</div></div>
+      <div class="sum-cell"><div class="sl">Period Return</div><div class="sv" id="m-return">—</div></div>
+      <div class="sum-cell"><div class="sl">Best Stock</div><div class="sv" id="m-best" style="font-size:14px">—</div></div>
+      <div class="sum-cell"><div class="sl">Worst Stock</div><div class="sv" id="m-worst" style="font-size:14px">—</div></div>
+    </div>
+
+    <div class="modal-chart-area">
+      <canvas id="modal-canvas"></canvas>
+    </div>
+
+    <div class="modal-comps">
+      <div class="comp-hdr">Component Stocks</div>
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Price (₹)</th>
+            <th>Period Chg</th>
+            <th style="width:160px">Performance</th>
+          </tr>
+        </thead>
+        <tbody id="comp-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════
+//  CONFIG
+// ═══════════════════════════════════════════════════════════════════
+const SUFFIX  = '.NS'; // NSE — change to .BO for BSE
+const PROXY   = 'http://localhost:5001/proxy?url=';
+const YF_BASE = 'https://query1.finance.yahoo.com/v8/finance/chart/';
+
+const TF = {
+  '1D': { interval: '5m',  range: '1d',   label: 'Today'    },
+  '1W': { interval: '60m', range: '5d',   label: '5 Days'   },
+  '1M': { interval: '1d',  range: '1mo',  label: '1 Month'  },
+  '3M': { interval: '1d',  range: '3mo',  label: '3 Months' },
+  '6M': { interval: '1d',  range: '6mo',  label: '6 Months' },
+  '1Y': { interval: '1d',  range: '1y',   label: '1 Year'   },
+};
+
+// Stats displayed in card footer (always fixed reference points)
+const CARD_STATS_TF = ['1W', '1M', '3M'];
+
+// ═══════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════
+const sectors     = new Map();   // name → { name, tickers, filename, data: Map<tf, IndexData>, loading }
+const sparkCharts = new Map();   // sectorName → Chart
+let   globalTf    = '1M';
+let   modalName   = null;
+let   modalTf     = '1M';
+let   modalChart  = null;
+let   refreshing  = false;
+
+// ═══════════════════════════════════════════════════════════════════
+//  HELPERS
+// ═══════════════════════════════════════════════════════════════════
+const pct = n => (n == null || isNaN(n)) ? '—' : (n >= 0 ? '+' : '') + n.toFixed(2) + '%';
+const cls = n => (n == null || isNaN(n)) ? 'neutral' : n >= 0 ? 'positive' : 'negative';
+const fmtRs = n => (n == null || isNaN(n)) ? '—' : '₹' + n.toLocaleString('en-IN', { maximumFractionDigits: 2, minimumFractionDigits: 2 });
+const sid  = s => s.replace(/[^a-zA-Z0-9]/g, '_');
+
+function fmtTs(ms, tf) {
+  const d = new Date(ms);
+  if (tf === '1D') return d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Kolkata' });
+  return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+}
+
+function isMarketOpen() {
+  const now  = new Date();
+  const utc  = now.getTime() + now.getTimezoneOffset() * 60000;
+  const ist  = new Date(utc + 5.5 * 3600000);
+  const day  = ist.getDay();
+  if (day === 0 || day === 6) return false;
+  const mins = ist.getHours() * 60 + ist.getMinutes();
+  return mins >= 9 * 60 + 15 && mins <= 15 * 60 + 30;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  FILE PARSING
+// ═══════════════════════════════════════════════════════════════════
+function parseSectorFile(filename, text) {
+  const lines = text.trim().split('\n').map(l => l.trim()).filter(Boolean);
+  if (lines.length < 2) return null;
+  return {
+    name:     lines[0].toUpperCase(),
+    tickers:  lines.slice(1).map(t => t.toUpperCase()),
+    filename,
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  DATA FETCHING
+// ═══════════════════════════════════════════════════════════════════
+async function fetchTicker(ticker, tf) {
+  const { interval, range } = TF[tf];
+  const url = `${YF_BASE}${ticker}${SUFFIX}?interval=${interval}&range=${range}`;
+  try {
+    const res  = await fetch(PROXY + encodeURIComponent(url));
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    const r    = json?.chart?.result?.[0];
+    if (!r) throw new Error('No chart result');
+
+    const ts  = r.timestamp || [];
+    const cl  = r.indicators?.quote?.[0]?.close || [];
+    const pts = [];
+    for (let i = 0; i < ts.length; i++) {
+      if (cl[i] != null) pts.push({ ms: ts[i] * 1000, price: cl[i] });
+    }
+
+    return {
+      ticker,
+      points:       pts,
+      currentPrice: r.meta?.regularMarketPrice ?? pts[pts.length - 1]?.price ?? null,
+      prevClose:    r.meta?.previousClose ?? r.meta?.chartPreviousClose ?? null,
+    };
+  } catch (e) {
+    console.warn(`[${ticker}] ${e.message}`);
+    return { ticker, points: [], currentPrice: null, prevClose: null, failed: true };
+  }
+}
+
+/**
+ * Builds an equal-weighted index from ticker data.
+ * Each ticker is normalized to 100 at its first available price,
+ * then the index is the average of all normalized values.
+ * @returns { indexPoints: [{ms, val}], components: [...], periodChange: number }
+ */
+function buildIndex(tickerResults) {
+  const valid = tickerResults.filter(r => r.points.length > 0);
+  if (!valid.length) return null;
+
+  // Normalize
+  const normed = valid.map(r => {
+    const base = r.points[0].price;
+    return {
+      ...r,
+      norm: r.points.map(p => ({ ms: p.ms, val: (p.price / base) * 100 })),
+    };
+  });
+
+  // Merge timestamps
+  const allMs = [...new Set(normed.flatMap(n => n.norm.map(p => p.ms)))].sort((a, b) => a - b);
+
+  // Forward-fill per ticker and average
+  const lastVal = new Map(); // ticker → last normalized val
+  const indexPoints = [];
+
+  for (const ms of allMs) {
+    normed.forEach(n => {
+      const pt = n.norm.find(p => p.ms === ms);
+      if (pt) lastVal.set(n.ticker, pt.val);
+    });
+    const vals = [...lastVal.values()];
+    if (vals.length) {
+      indexPoints.push({ ms, val: vals.reduce((a, b) => a + b, 0) / vals.length });
+    }
+  }
+
+  // Per-stock period change
+  const components = tickerResults.map(r => {
+    if (!r.points.length) return { ...r, periodChange: null };
+    const first = r.points[0].price;
+    const last  = r.points[r.points.length - 1].price;
+    return { ...r, periodChange: ((last - first) / first) * 100 };
+  });
+
+  const periodChange = indexPoints.length >= 2
+    ? indexPoints[indexPoints.length - 1].val - 100
+    : null;
+
+  return { indexPoints, components, periodChange };
+}
+
+async function loadSector(sector, tf) {
+  sector.loading = true;
+  renderCard(sector);
+
+  const results = await Promise.all(sector.tickers.map(t => fetchTicker(t, tf)));
+  const data    = buildIndex(results);
+
+  if (!sector.data) sector.data = new Map();
+  sector.data.set(tf, data);
+  sector.loading = false;
+
+  renderCard(sector);
+  if (modalName === sector.name && modalTf === tf) renderModalContent();
+}
+
+async function loadAll(tf) {
+  const tasks = [];
+  sectors.forEach(s => {
+    if (!s.data?.has(tf)) tasks.push(loadSector(s, tf));
+  });
+  await Promise.all(tasks);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CARD RENDERING
+// ═══════════════════════════════════════════════════════════════════
+function ensureCard(sector) {
+  const grid = document.getElementById('sectors-grid');
+  // Clear empty state
+  const empty = grid.querySelector('.empty-state');
+  if (empty) empty.remove();
+
+  let card = document.getElementById(`card-${sid(sector.name)}`);
+  if (!card) {
+    card = document.createElement('div');
+    card.className = 'sector-card';
+    card.id = `card-${sid(sector.name)}`;
+    card.dataset.name = sector.name;
+    card.addEventListener('click', () => openModal(sector.name));
+    grid.appendChild(card);
+  }
+  return card;
+}
+
+function renderCard(sector) {
+  const card    = ensureCard(sector);
+  const gData   = sector.data?.get(globalTf);
+  const loading = sector.loading;
+  const chg     = gData?.periodChange;
+
+  const statsHtml = CARD_STATS_TF.map(tf => {
+    const d = sector.data?.get(tf);
+    return `<div class="stat">
+      <div class="sl">${tf}</div>
+      <div class="sv ${cls(d?.periodChange)}">${pct(d?.periodChange)}</div>
+    </div>`;
+  }).join('');
+
+  card.innerHTML = `
+    <div class="card-hdr">
+      <div>
+        <div class="card-name">${sector.name}</div>
+        <div class="card-tickers">${sector.tickers.join(' · ')}</div>
+      </div>
+      <div class="card-chg">
+        <div class="val ${cls(chg)}">${pct(chg)}</div>
+        <div class="lbl">${TF[globalTf].label}</div>
+      </div>
+    </div>
+    <div class="card-stats">${statsHtml}</div>
+    <div class="card-chart-wrap">
+      ${loading
+        ? `<div class="card-loading"><div class="spinner"></div>Fetching data…</div>`
+        : `<canvas id="spark-${sid(sector.name)}"></canvas>`
+      }
+    </div>
+  `;
+
+  if (!loading && gData?.indexPoints?.length) {
+    requestAnimationFrame(() => renderSparkline(sector.name, gData.indexPoints));
+  }
+}
+
+function renderSparkline(name, points) {
+  const canvas = document.getElementById(`spark-${sid(name)}`);
+  if (!canvas) return;
+  if (sparkCharts.has(name)) { sparkCharts.get(name).destroy(); sparkCharts.delete(name); }
+
+  const vals  = points.map(p => p.val);
+  const isUp  = vals[vals.length - 1] >= 100;
+  const color = isUp ? '#00c9a7' : '#ff4757';
+
+  const chart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: points.map(p => p.ms),
+      datasets: [{
+        data: vals,
+        borderColor: color,
+        borderWidth: 1.5,
+        pointRadius: 0,
+        fill: true,
+        backgroundColor: ctx => {
+          const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 80);
+          g.addColorStop(0, color + '45');
+          g.addColorStop(1, color + '00');
+          return g;
+        },
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display: false }, tooltip: { enabled: false } },
+      scales: { x: { display: false }, y: { display: false } },
+    }
+  });
+  sparkCharts.set(name, chart);
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  MODAL
+// ═══════════════════════════════════════════════════════════════════
+function openModal(name) {
+  modalName = name;
+  modalTf   = globalTf;
+  const sector = sectors.get(name);
+
+  document.getElementById('modal-title').textContent   = sector.name;
+  document.getElementById('modal-tickers').textContent = sector.tickers.join(' · ');
+
+  document.querySelectorAll('.mtf-btn').forEach(b => b.classList.toggle('active', b.dataset.tf === modalTf));
+  document.getElementById('modal-overlay').classList.add('open');
+
+  renderModalContent();
+}
+
+function renderModalContent() {
+  const sector = sectors.get(modalName);
+  if (!sector) return;
+
+  const data = sector.data?.get(modalTf);
+
+  // Summary
+  if (data) {
+    const lastVal = data.indexPoints.length ? data.indexPoints[data.indexPoints.length - 1].val : null;
+    document.getElementById('m-level').textContent = lastVal ? lastVal.toFixed(2) : '—';
+
+    const ret = document.getElementById('m-return');
+    ret.textContent  = pct(data.periodChange);
+    ret.className    = 'sv ' + cls(data.periodChange);
+
+    const sorted = [...data.components]
+      .filter(c => c.periodChange != null)
+      .sort((a, b) => b.periodChange - a.periodChange);
+
+    document.getElementById('m-best').textContent  = sorted.length ? `${sorted[0].ticker} ${pct(sorted[0].periodChange)}` : '—';
+    document.getElementById('m-best').className    = 'sv ' + cls(sorted[0]?.periodChange);
+    document.getElementById('m-worst').textContent = sorted.length ? `${sorted[sorted.length - 1].ticker} ${pct(sorted[sorted.length - 1].periodChange)}` : '—';
+    document.getElementById('m-worst').className   = 'sv ' + cls(sorted[sorted.length - 1]?.periodChange);
+  } else {
+    ['m-level','m-return','m-best','m-worst'].forEach(id => {
+      document.getElementById(id).textContent = sector.loading ? '…' : '—';
+      document.getElementById(id).className   = 'sv';
+    });
+  }
+
+  renderModalChart(data, sector.loading);
+  renderCompTable(data?.components || [], sector.loading);
+}
+
+function renderModalChart(data, loading) {
+  if (modalChart) { modalChart.destroy(); modalChart = null; }
+
+  const area   = document.querySelector('.modal-chart-area');
+  const canvas = document.getElementById('modal-canvas');
+
+  // Clear overlays
+  area.querySelectorAll('.no-data-msg,.modal-loading-msg').forEach(el => el.remove());
+
+  if (loading) {
+    canvas.style.display = 'none';
+    const msg = document.createElement('div');
+    msg.className = 'modal-loading-msg';
+    msg.innerHTML = `<div class="spinner" style="width:18px;height:18px"></div> Loading market data…`;
+    area.appendChild(msg);
+    return;
+  }
+
+  if (!data?.indexPoints?.length) {
+    canvas.style.display = 'none';
+    const msg = document.createElement('div');
+    msg.className = 'no-data-msg';
+    msg.textContent = 'No data available for this timeframe';
+    area.appendChild(msg);
+    return;
+  }
+
+  canvas.style.display = '';
+  const pts   = data.indexPoints;
+  const isUp  = pts[pts.length - 1].val >= 100;
+  const color = isUp ? '#00c9a7' : '#ff4757';
+
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 280);
+  grad.addColorStop(0, color + '35');
+  grad.addColorStop(1, color + '00');
+
+  modalChart = new Chart(canvas, {
+    type: 'line',
+    data: {
+      labels: pts.map(p => fmtTs(p.ms, modalTf)),
+      datasets: [{
+        label: 'Index',
+        data: pts.map(p => p.val),
+        borderColor: color,
+        borderWidth: 2,
+        pointRadius: 0,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: color,
+        fill: true,
+        backgroundColor: grad,
+        tension: 0.3,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#0d1220',
+          borderColor: '#1c2337',
+          borderWidth: 1,
+          titleColor: '#5a6585',
+          bodyColor: '#dce1f0',
+          titleFont: { family: "'IBM Plex Mono'", size: 11 },
+          bodyFont:  { family: "'IBM Plex Mono'", size: 12, weight: '500' },
+          callbacks: {
+            label: ctx => {
+              const v   = ctx.raw;
+              const chg = v - 100;
+              return ` ${v.toFixed(2)}  (${chg >= 0 ? '+' : ''}${chg.toFixed(2)}%)`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { color: '#1c2337' },
+          ticks: { color: '#5a6585', font: { family: "'IBM Plex Mono'", size: 10 }, maxTicksLimit: 8 },
+        },
+        y: {
+          grid: { color: '#1c2337' },
+          ticks: {
+            color: '#5a6585',
+            font: { family: "'IBM Plex Mono'", size: 10 },
+            callback: v => `${(v - 100).toFixed(1)}%`,
+          },
+        }
+      }
+    }
+  });
+}
+
+function renderCompTable(components, loading) {
+  const tbody = document.getElementById('comp-tbody');
+  if (loading) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">Loading…</td></tr>`;
+    return;
+  }
+  if (!components.length) {
+    tbody.innerHTML = `<tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px">No data</td></tr>`;
+    return;
+  }
+
+  const maxAbs = Math.max(1, ...components.map(c => Math.abs(c.periodChange || 0)));
+
+  tbody.innerHTML = components.map(c => {
+    const chg    = c.periodChange;
+    const barW   = Math.abs(chg || 0) / maxAbs * 90;
+    const barClr = (chg || 0) >= 0 ? 'var(--green)' : 'var(--red)';
+    return `<tr>
+      <td>
+        <div class="t-name">${c.ticker}</div>
+        <div class="t-price">${c.failed ? '<span style="color:var(--red)">Fetch failed</span>' : fmtRs(c.currentPrice)}</div>
+      </td>
+      <td>${fmtRs(c.currentPrice)}</td>
+      <td class="${cls(chg)}">${pct(chg)}</td>
+      <td>
+        <div class="bar-row">
+          <span style="font-size:11px;color:${barClr};min-width:55px;text-align:right">${pct(chg)}</span>
+          <div class="perf-bar" style="width:${barW}px;background:${barClr}"></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  if (modalChart) { modalChart.destroy(); modalChart = null; }
+  modalName = null;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  FILE HANDLING
+// ═══════════════════════════════════════════════════════════════════
+async function handleFiles(files) {
+  const txts = [...files].filter(f => f.name.endsWith('.txt'));
+  if (!txts.length) return;
+
+  for (const file of txts) {
+    const text   = await file.text();
+    const parsed = parseSectorFile(file.name, text);
+    if (parsed && !sectors.has(parsed.name)) {
+      sectors.set(parsed.name, { ...parsed, data: new Map(), loading: false });
+    }
+  }
+
+  updateFileTags();
+  // Render empty cards immediately
+  sectors.forEach(s => renderCard(s));
+
+  // Load active TF first, then background stats TFs
+  await loadAll(globalTf);
+  for (const tf of CARD_STATS_TF) {
+    if (tf !== globalTf) loadAll(tf);
+  }
+}
+
+function updateFileTags() {
+  const container = document.getElementById('file-tags');
+  container.innerHTML = [...sectors.values()].map(s => `
+    <span class="ftag">
+      📄 ${s.filename}
+      <span class="rm" data-name="${s.name}">×</span>
+    </span>
+  `).join('');
+}
+
+function removeSector(name) {
+  sectors.delete(name);
+  if (sparkCharts.has(name)) { sparkCharts.get(name).destroy(); sparkCharts.delete(name); }
+  document.getElementById(`card-${sid(name)}`)?.remove();
+  updateFileTags();
+  if (!sectors.size) {
+    document.getElementById('sectors-grid').innerHTML = `
+      <div class="empty-state"><div class="ei">📈</div><p>Upload your sector.txt files to get started</p></div>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+//  CLOCK + MARKET STATUS
+// ═══════════════════════════════════════════════════════════════════
+function updateClock() {
+  const ist   = new Date().toLocaleTimeString('en-IN', { timeZone: 'Asia/Kolkata', hour12: false });
+  const open  = isMarketOpen();
+  document.getElementById('clock').textContent    = ist + ' IST';
+  document.getElementById('mkt-dot').className    = 'dot' + (open ? ' live' : '');
+  document.getElementById('mkt-label').textContent = open ? 'MARKET OPEN' : 'MARKET CLOSED';
+}
+updateClock();
+setInterval(updateClock, 1000);
+
+// ── PROXY HEALTH CHECK ──────────────────────────────────────────────
+(async () => {
+  try {
+    const res = await fetch('http://localhost:5001/health');
+    if (!res.ok) throw new Error();
+  } catch {
+    showProxyBanner();
+  }
+})();
+
+function showProxyBanner() {
+  const b = document.createElement('div');
+  b.style.cssText = `
+    position:fixed;bottom:0;left:0;right:0;z-index:999;
+    background:#1a0a00;border-top:1px solid #f0a500;
+    padding:12px 28px;display:flex;align-items:center;
+    justify-content:space-between;
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:#dce1f0;
+  `;
+  b.innerHTML = `
+    <span>⚠️ &nbsp;<strong style="color:#f0a500">Local proxy not running.</strong>
+    &nbsp;In your project folder: <code style="background:#0d1220;padding:2px 8px;border-radius:3px;color:#f0a500">python proxy.py</code>
+    &nbsp;then refresh this page.</span>
+    <span style="cursor:pointer;color:#5a6585;font-size:18px" onclick="this.parentElement.remove()">×</span>
+  `;
+  document.body.appendChild(b);
+}
+
+// Auto-refresh every 5 min when market is open
+setInterval(() => {
+  if (!isMarketOpen() || !sectors.size) return;
+  sectors.forEach(s => { s.data?.delete(globalTf); s.data?.delete('1D'); });
+  loadAll(globalTf);
+}, 5 * 60 * 1000);
+
+// ═══════════════════════════════════════════════════════════════════
+//  EVENT WIRING
+// ═══════════════════════════════════════════════════════════════════
+const dropZone = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('click',      () => fileInput.click());
+dropZone.addEventListener('dragover',   e => { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave',  () => dropZone.classList.remove('over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('over');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => { handleFiles(fileInput.files); fileInput.value = ''; });
+
+// File tag remove (event delegation)
+document.getElementById('file-tags').addEventListener('click', e => {
+  const rm = e.target.closest('.rm');
+  if (rm) { e.stopPropagation(); removeSector(rm.dataset.name); }
+});
+
+// Global TF switcher
+document.getElementById('global-tf').addEventListener('click', async e => {
+  const btn = e.target.closest('.tf-btn');
+  if (!btn) return;
+  globalTf = btn.dataset.tf;
+  document.querySelectorAll('.tf-btn').forEach(b => b.classList.toggle('active', b === btn));
+  // Re-render cards (show cached data immediately, then fetch missing)
+  sectors.forEach(s => renderCard(s));
+  await loadAll(globalTf);
+});
+
+// Modal TF switcher
+document.getElementById('modal-tf').addEventListener('click', async e => {
+  const btn = e.target.closest('.mtf-btn');
+  if (!btn || !modalName) return;
+  modalTf = btn.dataset.tf;
+  document.querySelectorAll('.mtf-btn').forEach(b => b.classList.toggle('active', b === btn));
+  const sector = sectors.get(modalName);
+  if (!sector.data?.has(modalTf)) {
+    sector.loading = true;
+    renderModalContent();
+    await loadSector(sector, modalTf);
+  } else {
+    renderModalContent();
+  }
+});
+
+// Refresh all
+document.getElementById('refresh-btn').addEventListener('click', async () => {
+  if (refreshing) return;
+  refreshing = true;
+  const btn = document.getElementById('refresh-btn');
+  btn.innerHTML = '<span class="spin">↻</span> Refreshing…';
+  sectors.forEach(s => { s.data = new Map(); });
+  await loadAll(globalTf);
+  for (const tf of CARD_STATS_TF) { if (tf !== globalTf) loadAll(tf); }
+  btn.innerHTML = '↻ Refresh All';
+  refreshing = false;
+});
+
+// Modal close
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

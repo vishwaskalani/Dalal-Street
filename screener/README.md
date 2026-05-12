@@ -1,0 +1,107 @@
+# Screener Scraping Utilities
+
+Authenticated scraping tools for [screener.in](https://www.screener.in), built to grow with your research workflow.
+
+---
+
+## Setup
+
+**1. Install dependencies**
+```bash
+pip install requests beautifulsoup4 lxml python-dotenv
+```
+
+**2. Create your `.env` file** in the `Dalal-Street/` root:
+```bash
+cp .env.example .env
+# then edit .env with your screener.in credentials
+```
+
+```
+SCREENER_USERNAME=your_email@example.com
+SCREENER_PASSWORD=your_password
+```
+
+---
+
+## Peer Comparison
+
+Fetches the **Peer Comparison** table for any listed company — the same table you see on `screener.in/company/MCX/consolidated/`.
+
+### Command line
+
+Run from the `Dalal-Street/` root:
+
+```bash
+# Single ticker
+python3 run_peers.py MCX
+
+# Multiple tickers in one shot (single login)
+python3 run_peers.py MCX RELIANCE HDFCBANK
+
+# Use standalone financials instead of consolidated
+python3 run_peers.py MCX --standalone
+```
+
+**Example output:**
+```
+Peer Comparison — MCX
+Source : https://www.screener.in/company/MCX/consolidated/
+----------------------------------------------------------------------
+BSE                             Price:    3851.90  PE:    63.13  MCap:    156887.53
+Multi Comm. Exc.                Price:    3156.90  PE:    60.45  MCap:     80498.38
+Indian Energy Ex                Price:     127.21  PE:    23.95  MCap:     11343.22
+----------------------------------------------------------------------
+Total peers: 3
+```
+
+### In your own script
+
+```python
+from screener import ScreenerClient, peers
+
+client = ScreenerClient()  # reads .env automatically
+
+# Fetch peers for a ticker
+table = peers.fetch(client, "MCX")                      # consolidated (default)
+table = peers.fetch(client, "MCX", consolidated=False)  # standalone
+
+# Pretty print
+print(table)
+
+# Iterate over peers
+for peer in table.peers:
+    print(peer.name, peer.url, peer.pe_ratio, peer.market_cap)
+
+# Access any column not mapped to a named field
+for peer in table.peers:
+    print(peer.extra)  # dict of remaining columns
+```
+
+### `Peer` fields
+
+| Field | Screener column |
+|---|---|
+| `name` | Company name |
+| `url` | screener.in relative URL |
+| `current_price` | CMP (Rs.) |
+| `pe_ratio` | P/E |
+| `market_cap` | Mar Cap (Rs. Cr.) |
+| `div_yield` | Div Yld % |
+| `net_profit_qtr` | NP Qtr (Rs. Cr.) |
+| `qtr_profit_var` | Qtr Profit Var % |
+| `sales_qtr` | Sales Qtr (Rs. Cr.) |
+| `qtr_sales_var` | Qtr Sales Var % |
+| `roce` | ROCE % |
+| `extra` | Any additional columns (dict) |
+
+---
+
+## Adding a new utility
+
+1. Create `screener/<utility_name>.py`
+2. Accept a `ScreenerClient` as the first argument and call `client.get(url)` — auth is handled for you
+3. Return a typed dataclass (add it to `models.py`)
+4. Add an entry point script at the root if needed
+
+The `ScreenerClient` maintains a single session across all calls, so multiple utilities in one script share one login.
