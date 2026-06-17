@@ -89,6 +89,31 @@ def _fetch_shares_parallel(yf_tickers: list[str]) -> dict[str, float]:
     return out
 
 
+def fetch_prices(ticker: str, timeframe: str) -> pd.Series:
+    """Split/dividend-adjusted close series for a single NSE ticker over the
+    timeframe. Returns an empty Series if nothing is available."""
+    cfg = TF_CONFIG[timeframe]
+    raw = yf.download(
+        f"{ticker}.NS",
+        period=cfg["period"],
+        interval=cfg["interval"],
+        auto_adjust=True,
+        progress=False,
+    )
+    if raw.empty:
+        return pd.Series(dtype=float)
+
+    close = raw["Close"]
+    if isinstance(close, pd.DataFrame):
+        close = close.iloc[:, 0]
+
+    if "trim_years" in cfg and not close.empty:
+        cutoff = pd.Timestamp.now(tz=close.index.tz) - pd.DateOffset(years=cfg["trim_years"])
+        close = close[close.index >= cutoff]
+
+    return close.dropna()
+
+
 def fetch_index(
     tickers: list[str],
     timeframe: str,

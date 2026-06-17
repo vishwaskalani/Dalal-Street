@@ -1,5 +1,5 @@
 """
-app.py — Streamlit UI for the custom index tracker.
+app.py — Streamlit UI for the niche index tracker.
 
 Run locally:
     streamlit run app.py
@@ -17,25 +17,52 @@ import streamlit as st
 from index_engine import (
     TIMEFRAMES,
     fetch_index,
+    fetch_prices,
     list_sectors,
     load_sector,
 )
 
+UP, DOWN, GRID = "#16a34a", "#dc2626", "#9ca3af"
+
 st.set_page_config(
-    page_title="Custom Index Tracker",
-    page_icon="📈",
+    page_title="Niche Index Tracker",
+    page_icon="📊",
     layout="wide",
 )
 
-st.title("📈 Custom Index Tracker")
-st.caption("Market-cap weighted indices built from your own sector files.")
+# ── Styling — clean, dense, terminal-ish for technical users ───────────────────
+st.markdown(
+    """
+    <style>
+      .block-container { padding-top: 2.2rem; padding-bottom: 3rem; max-width: 1300px; }
+      [data-testid="stMetricValue"] { font-variant-numeric: tabular-nums;
+          font-feature-settings: "tnum"; }
+      [data-testid="stMetricLabel"] { text-transform: uppercase; letter-spacing: .06em;
+          font-size: .72rem; opacity: .7; }
+      div[data-testid="stDataFrame"] { font-variant-numeric: tabular-nums; }
+      .nit-tag { display:inline-block; font-size:.72rem; letter-spacing:.08em;
+          text-transform:uppercase; color:#16a34a; border:1px solid #16a34a33;
+          background:#16a34a14; padding:2px 9px; border-radius:999px; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# ── Header ─────────────────────────────────────────────────────────────────────
+st.markdown('<span class="nit-tag">Niche Index Tracker</span>', unsafe_allow_html=True)
+st.title("📊 Niche Index Tracker")
+st.caption(
+    "Custom market-cap-weighted indices for under-the-radar NSE themes — "
+    "auto ancillaries, pumps, refractories, capital markets, ports, wind, solar & more. "
+    "Total-return (split/dividend-adjusted), rebased to 100 at the start of each window."
+)
 
 # ── Load sectors ───────────────────────────────────────────────────────────────
 sector_paths = list_sectors()
 if not sector_paths:
     st.warning(
         "No sector files found in `sectors/`. Add a `.txt` file with the "
-        "sector name on line 1 and one NSE symbol per line below it."
+        "index name on line 1 and one NSE symbol per line below it."
     )
     st.stop()
 
@@ -45,7 +72,7 @@ sectors = {load_sector(p)[0]: p for p in sector_paths}
 with st.sidebar:
     st.header("Settings")
     selected_name = st.selectbox("Index", list(sectors.keys()))
-    selected_tf   = st.radio(
+    selected_tf = st.radio(
         "Timeframe",
         TIMEFRAMES,
         index=TIMEFRAMES.index("1y"),
@@ -53,8 +80,9 @@ with st.sidebar:
     )
     st.markdown("---")
     st.caption(
-        "Edit / add files in `sectors/` to change the indices. "
-        "First line = sector name, then one NSE symbol per line."
+        "Each index is defined by a file in `sectors/` — first line is the "
+        "index name, then one NSE symbol per line. Data via yfinance, cached "
+        "for 15 min."
     )
 
 sector_name, tickers = load_sector(sectors[selected_name])
@@ -63,6 +91,11 @@ sector_name, tickers = load_sector(sectors[selected_name])
 @st.cache_data(ttl=900, show_spinner="Fetching prices & shares from yfinance…")
 def _get_index(tickers_t: tuple[str, ...], tf: str):
     return fetch_index(list(tickers_t), tf)
+
+
+@st.cache_data(ttl=900, show_spinner=False)
+def _get_prices(ticker: str, tf: str) -> pd.Series:
+    return fetch_prices(ticker, tf)
 
 
 index_series, constituents, excluded = _get_index(tuple(tickers), selected_tf)
@@ -75,24 +108,21 @@ if index_series.empty:
     st.stop()
 
 # ── Header metrics ─────────────────────────────────────────────────────────────
-current   = float(index_series.iloc[-1])
-start_val = float(index_series.iloc[0])
-ret_pct   = current - start_val   # because start_val == 100
+current = float(index_series.iloc[-1])
+ret_pct = current - float(index_series.iloc[0])  # start == 100
 
 col1, col2, col3, col4 = st.columns(4)
-col1.metric("Sector", sector_name)
-col2.metric("Current value", f"{current:,.2f}", f"{ret_pct:+.2f}%")
-col3.metric("Timeframe", selected_tf.upper())
+col1.metric("Index", sector_name)
+col2.metric("Value", f"{current:,.2f}", f"{ret_pct:+.2f}%")
+col3.metric("Window", selected_tf.upper())
 col4.metric("Constituents", len(constituents))
 
 if excluded:
-    st.info(
-        "Excluded (no data for the selected window): " + ", ".join(excluded)
-    )
+    st.info("Excluded (no data for this window): " + ", ".join(excluded))
 
-# ── Chart ──────────────────────────────────────────────────────────────────────
-line_color = "#16a34a" if ret_pct >= 0 else "#dc2626"
-fill_color = "rgba(22, 163, 74, 0.10)" if ret_pct >= 0 else "rgba(220, 38, 38, 0.10)"
+# ── Index chart ────────────────────────────────────────────────────────────────
+line_color = UP if ret_pct >= 0 else DOWN
+fill_color = "rgba(22,163,74,0.10)" if ret_pct >= 0 else "rgba(220,38,38,0.10)"
 
 fig = go.Figure()
 fig.add_trace(
@@ -107,9 +137,9 @@ fig.add_trace(
         hovertemplate="<b>%{x|%d %b %Y}</b><br>Index: %{y:,.2f}<extra></extra>",
     )
 )
-fig.add_hline(y=100, line_dash="dot", line_color="#9ca3af", opacity=0.6)
+fig.add_hline(y=100, line_dash="dot", line_color=GRID, opacity=0.6)
 fig.update_layout(
-    height=480,
+    height=460,
     yaxis_title="Index value (base = 100)",
     xaxis_title=None,
     template="plotly_white",
@@ -117,20 +147,20 @@ fig.update_layout(
     showlegend=False,
 )
 fig.update_yaxes(rangemode="tozero" if ret_pct < 0 else "normal")
-
 st.plotly_chart(fig, use_container_width=True)
 
-# ── Constituents table ─────────────────────────────────────────────────────────
+# ── Constituents table (click a row to inspect) ────────────────────────────────
 st.subheader("Constituents")
+st.caption("Select a row to chart an individual constituent and compare it to the index.")
 
 table = (
     pd.DataFrame(
         [
             {
-                "Ticker":           sym,
-                "Price (₹)":        round(d["price"], 2),
-                "Market Cap (Cr)":  round(d["mcap_cr"], 0),
-                "Weight (%)":       round(d["weight_pct"], 2),
+                "Ticker": sym,
+                "Price (₹)": round(d["price"], 2),
+                "Market Cap (Cr)": round(d["mcap_cr"], 0),
+                "Weight (%)": round(d["weight_pct"], 2),
             }
             for sym, d in constituents.items()
         ]
@@ -138,4 +168,84 @@ table = (
     .sort_values("Weight (%)", ascending=False)
     .reset_index(drop=True)
 )
-st.dataframe(table, use_container_width=True, hide_index=True)
+
+event = st.dataframe(
+    table,
+    use_container_width=True,
+    hide_index=True,
+    on_select="rerun",
+    selection_mode="single-row",
+    column_config={
+        "Ticker": st.column_config.TextColumn(width="small"),
+        "Price (₹)": st.column_config.NumberColumn(format="₹ %.2f"),
+        "Market Cap (Cr)": st.column_config.NumberColumn(format="%.0f"),
+        "Weight (%)": st.column_config.ProgressColumn(
+            format="%.2f%%",
+            min_value=0.0,
+            max_value=float(table["Weight (%)"].max()),
+        ),
+    },
+)
+
+# ── Constituent detail ─────────────────────────────────────────────────────────
+selected_rows = event.selection.rows if event and event.selection else []
+if selected_rows:
+    row = table.iloc[selected_rows[0]]
+    sym = row["Ticker"]
+    meta = constituents[sym]
+
+    st.markdown("---")
+    st.subheader(f"🔍 {sym}")
+
+    prices = _get_prices(sym, selected_tf)
+    if prices.empty:
+        st.warning(f"No price history available for {sym} in this window.")
+    else:
+        c_ret = (float(prices.iloc[-1]) / float(prices.iloc[0]) - 1.0) * 100.0
+        rel = c_ret - ret_pct  # constituent return minus index return
+
+        m1, m2, m3, m4 = st.columns(4)
+        m1.metric("Price", f"₹ {meta['price']:,.2f}")
+        m2.metric(f"Return ({selected_tf.upper()})", f"{c_ret:+.2f}%")
+        m3.metric("vs Index", f"{rel:+.2f}%")
+        m4.metric("Index weight", f"{meta['weight_pct']:.2f}%")
+
+        # Rebase both to 100 to compare relative performance over the window.
+        c_rebased = prices / float(prices.iloc[0]) * 100.0
+        c_color = UP if c_ret >= 0 else DOWN
+
+        cfig = go.Figure()
+        cfig.add_trace(
+            go.Scatter(
+                x=index_series.index,
+                y=index_series.values,
+                mode="lines",
+                name=f"{sector_name} index",
+                line=dict(color=GRID, width=1.6, dash="dot"),
+                hovertemplate="Index: %{y:,.2f}<extra></extra>",
+            )
+        )
+        cfig.add_trace(
+            go.Scatter(
+                x=c_rebased.index,
+                y=c_rebased.values,
+                mode="lines",
+                name=sym,
+                line=dict(color=c_color, width=2.2),
+                hovertemplate=f"<b>%{{x|%d %b %Y}}</b><br>{sym}: %{{y:,.2f}}<extra></extra>",
+            )
+        )
+        cfig.add_hline(y=100, line_dash="dot", line_color=GRID, opacity=0.4)
+        cfig.update_layout(
+            height=420,
+            yaxis_title="Rebased to 100 at window start",
+            xaxis_title=None,
+            template="plotly_white",
+            margin=dict(l=10, r=10, t=20, b=10),
+            legend=dict(orientation="h", yanchor="bottom", y=1.0, x=0),
+        )
+        st.plotly_chart(cfig, use_container_width=True)
+        st.caption(
+            f"{sym} rebased to 100 vs the {sector_name} index over {selected_tf.upper()} — "
+            "lets you see whether the name led or lagged its niche."
+        )
