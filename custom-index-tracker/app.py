@@ -52,10 +52,35 @@ st.markdown(
 st.markdown('<span class="nit-tag">Niche Index Tracker</span>', unsafe_allow_html=True)
 st.title("📊 Niche Index Tracker")
 st.caption(
-    "Custom market-cap-weighted indices for under-the-radar NSE themes — "
+    "Custom **FairBlend-weighted** indices for under-the-radar NSE themes — "
     "auto ancillaries, pumps, refractories, capital markets, ports, wind, solar & more. "
     "Total-return (split/dividend-adjusted), rebased to 100 at the start of each window."
 )
+
+with st.expander("ℹ️  How weighting works — FairBlend (50 / 50)"):
+    st.markdown(
+        """
+**The problem with pure market-cap weighting.** In a niche basket one giant
+can swallow the index — e.g. a Ports index that is ~86% Adani Ports really just
+tracks Adani Ports, and the smaller names you actually wanted exposure to become
+invisible.
+
+**FairBlend.** Each constituent's weight is a 50/50 blend of *equal* weight and
+*market-cap* weight:
+
+$$w_i \\;=\\; 0.5 \\cdot \\underbrace{\\tfrac{1}{N}}_{\\text{equal}} \\;+\\; 0.5 \\cdot \\underbrace{\\tfrac{\\text{mcap}_i}{\\sum_j \\text{mcap}_j}}_{\\text{market cap}}$$
+
+- **Equal half** gives every company in the niche a real, comparable voice.
+- **Market-cap half** keeps economic size honest, so a ₹2,000 Cr minnow doesn't
+  move the index as much as a ₹1 L Cr leader.
+
+Weights sum to 100%, so the index always starts at 100. The index value is then
+the blended-weight sum of each stock's total return:
+$\\;\\text{index}(t) = 100 \\cdot \\sum_i w_i \\cdot p_i(t)/p_i(t_0)$.
+The table below shows each name's **Equal**, **Cap**, and final **Blend** weight
+so you can see exactly how the mix lands.
+        """
+    )
 
 # ── Load sectors ───────────────────────────────────────────────────────────────
 sector_paths = list_sectors()
@@ -160,12 +185,14 @@ table = (
                 "Ticker": sym,
                 "Price (₹)": round(d["price"], 2),
                 "Market Cap (Cr)": round(d["mcap_cr"], 0),
-                "Weight (%)": round(d["weight_pct"], 2),
+                "Equal (%)": round(d["eq_wt"], 2),
+                "Cap (%)": round(d["cap_wt"], 2),
+                "Blend (%)": round(d["weight_pct"], 2),
             }
             for sym, d in constituents.items()
         ]
     )
-    .sort_values("Weight (%)", ascending=False)
+    .sort_values("Blend (%)", ascending=False)
     .reset_index(drop=True)
 )
 
@@ -179,10 +206,13 @@ event = st.dataframe(
         "Ticker": st.column_config.TextColumn(width="small"),
         "Price (₹)": st.column_config.NumberColumn(format="₹ %.2f"),
         "Market Cap (Cr)": st.column_config.NumberColumn(format="%.0f"),
-        "Weight (%)": st.column_config.ProgressColumn(
+        "Equal (%)": st.column_config.NumberColumn(format="%.2f%%", help="1 / N — every name equal"),
+        "Cap (%)": st.column_config.NumberColumn(format="%.2f%%", help="Pure market-cap share"),
+        "Blend (%)": st.column_config.ProgressColumn(
             format="%.2f%%",
+            help="FairBlend weight = 50% Equal + 50% Cap",
             min_value=0.0,
-            max_value=float(table["Weight (%)"].max()),
+            max_value=float(table["Blend (%)"].max()),
         ),
     },
 )
@@ -208,7 +238,7 @@ if selected_rows:
         m1.metric("Price", f"₹ {meta['price']:,.2f}")
         m2.metric(f"Return ({selected_tf.upper()})", f"{c_ret:+.2f}%")
         m3.metric("vs Index", f"{rel:+.2f}%")
-        m4.metric("Index weight", f"{meta['weight_pct']:.2f}%")
+        m4.metric("FairBlend weight", f"{meta['weight_pct']:.2f}%")
 
         # Rebase both to 100 to compare relative performance over the window.
         c_rebased = prices / float(prices.iloc[0]) * 100.0

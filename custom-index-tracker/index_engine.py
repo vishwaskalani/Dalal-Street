@@ -9,12 +9,16 @@ one NSE symbol per line afterwards, e.g.
     ICICIBANK
     ...
 
-The index value at time t is:
-    index(t) = 100 * Σᵢ (shares_i × price_i(t)) / Σᵢ (shares_i × price_i(t₀))
+Weighting is "FairBlend" — a 50/50 mix of equal and market-cap weight:
+    weightᵢ = 0.5·(1/N) + 0.5·(mcapᵢ / Σmcap)
 
-`shares_i` is the current shares-outstanding (one yfinance call per ticker,
-cached upstream). `price_i(t)` is split- and dividend-adjusted (auto_adjust),
-so the series is effectively a total-return index.
+and the index value at time t is:
+    index(t) = 100 * Σᵢ weightᵢ · price_i(t)/price_i(t₀)
+
+`mcapᵢ` uses current shares-outstanding × latest price, so weights are
+timeframe-independent. `price_i(t)` is split- and dividend-adjusted
+(auto_adjust), so the series is a total-return index. The blend stops a single
+mega-cap from dominating a niche basket while still respecting economic size.
 """
 
 from __future__ import annotations
@@ -169,27 +173,40 @@ def fetch_index(
 
     close = close[available].ffill().bfill()
 
-    # 5. Build market-cap series and rebase ------------------------------------
-    mcap = pd.DataFrame({yt: close[yt] * shares[yt] for yt in available})
-    total = mcap.sum(axis=1).dropna()
-    if total.empty or total.iloc[0] == 0:
+    # 5. FairBlend weights: 50% equal + 50% market-cap -------------------------
+    #    weightᵢ = 0.5·(1/N) + 0.5·(mcapᵢ / Σmcap)
+    #    Equal weight gives every niche name a voice; cap weight keeps economic
+    #    size honest. Weights are timeframe-independent (current-mcap snapshot)
+    #    and sum to 1, so the index always starts at 100.
+    n = len(available)
+    latest_prices  = close.iloc[-1]
+    latest_mcaps   = pd.Series({yt: latest_prices[yt] * shares[yt] for yt in available})
+    total_mcap_now = float(latest_mcaps.sum())
+    if n == 0 or total_mcap_now == 0:
         return pd.Series(dtype=float), {}, list(tickers)
 
-    index_series = (total / total.iloc[0]) * 100.0
+    eq_w    = {yt: 1.0 / n for yt in available}
+    cap_w   = {yt: float(latest_mcaps[yt]) / total_mcap_now for yt in available}
+    blend_w = {yt: 0.5 * eq_w[yt] + 0.5 * cap_w[yt] for yt in available}
+
+    # 6. Index = blended-weight sum of each constituent's total return ---------
+    norm = close / close.iloc[0]            # each ticker rebased to 1 at t₀
+    index_series = sum(blend_w[yt] * norm[yt] for yt in available) * 100.0
+    index_series = index_series.dropna()
     index_series.name = "index"
+    if index_series.empty:
+        return pd.Series(dtype=float), {}, list(tickers)
 
-    # 6. Constituent table (latest snapshot) -----------------------------------
-    latest_prices = close.iloc[-1]
-    latest_mcaps  = pd.Series({yt: latest_prices[yt] * shares[yt] for yt in available})
-    total_mcap_now = latest_mcaps.sum()
-
+    # 7. Constituent table -----------------------------------------------------
     constituents: dict[str, dict] = {}
     for yt in available:
         sym = yt.removesuffix(".NS")
         constituents[sym] = {
             "price":      float(latest_prices[yt]),
             "mcap_cr":    float(latest_mcaps[yt]) / 1e7,
-            "weight_pct": float(latest_mcaps[yt]) / float(total_mcap_now) * 100.0,
+            "eq_wt":      eq_w[yt] * 100.0,
+            "cap_wt":     cap_w[yt] * 100.0,
+            "weight_pct": blend_w[yt] * 100.0,
         }
 
     return index_series, constituents, sorted(set(excluded))
