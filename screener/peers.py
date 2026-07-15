@@ -58,6 +58,11 @@ def build_company_url(ticker: str, consolidated: bool = True) -> str:
     return f"{BASE_URL}/company/{ticker.upper().strip()}/{variant}/"
 
 
+def build_bare_url(ticker: str) -> str:
+    """URL without a variant suffix — screener redirects to whichever variant exists."""
+    return f"{BASE_URL}/company/{ticker.upper().strip()}/"
+
+
 def fetch(
     client: ScreenerClient,
     ticker: str,

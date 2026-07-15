@@ -2,13 +2,16 @@
 run_peers.py — fetch and display Peer Comparison for one or more tickers.
 
 Usage:
-    python run_peers.py MCX
-    python run_peers.py MCX RELIANCE HDFCBANK
-    python run_peers.py MCX --standalone
+    python screener/run_peers.py MCX
+    python screener/run_peers.py MCX RELIANCE HDFCBANK
+    python screener/run_peers.py MCX --standalone
 """
 
 import argparse
 import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from screener import ScreenerClient, peers
 
@@ -25,7 +28,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    client = ScreenerClient()   # reads .env automatically
+    client = ScreenerClient()
 
     for ticker in args.tickers:
         try:

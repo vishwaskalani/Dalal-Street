@@ -34,13 +34,13 @@ Run from the `Dalal-Street/` root:
 
 ```bash
 # Single ticker
-python3 run_peers.py MCX
+python3 screener/run_peers.py MCX
 
 # Multiple tickers in one shot (single login)
-python3 run_peers.py MCX RELIANCE HDFCBANK
+python3 screener/run_peers.py MCX RELIANCE HDFCBANK
 
 # Use standalone financials instead of consolidated
-python3 run_peers.py MCX --standalone
+python3 screener/run_peers.py MCX --standalone
 ```
 
 **Example output:**
@@ -104,7 +104,7 @@ Fetches every stock from a screener.in **screen** (saved query/filter) — handl
 ### Command line
 
 ```bash
-python3 run_screen.py "https://www.screener.in/screens/3655407/good-results-debt-free/"
+python3 screener/run_screen.py "https://www.screener.in/screens/3655407/good-results-debt-free/"
 ```
 
 **Example output:**
@@ -150,11 +150,82 @@ Since each screen has user-defined columns, all metric values live in `stock.met
 
 ---
 
+## Screen → Peers (composite tool)
+
+Combines the screen scraper and peer scraper: fetches every stock in a screen, then fetches the Peer Comparison table for each one.  Output is a flat CSV with one row per (screen stock, peer) pair.
+
+### Command line
+
+```bash
+# CSV to stdout
+python3 screener/run_screen_peers.py "https://www.screener.in/screens/3655407/good-results-debt-free/"
+
+# Save to a file
+python3 screener/run_screen_peers.py "https://www.screener.in/screens/3655407/good-results-debt-free/" -o peers.csv
+
+# Use standalone financials
+python3 screener/run_screen_peers.py "https://www.screener.in/screens/3655407/good-results-debt-free/" --standalone
+```
+
+Progress (stocks found, peers per stock) is printed to **stderr** so it doesn't pollute the CSV on stdout.
+
+### In your own script
+
+```python
+from screener import ScreenerClient, screen_peers
+
+client = ScreenerClient()
+
+rows = screen_peers.fetch(
+    client,
+    "https://www.screener.in/screens/3655407/good-results-debt-free/",
+    consolidated=True,
+    on_progress=print,   # optional live progress
+)
+
+# Write CSV to a file
+with open("peers.csv", "w", newline="") as f:
+    screen_peers.to_csv(rows, file=f)
+
+# Or get a CSV string
+csv_str = screen_peers.to_csv(rows)
+
+# Iterate directly
+for row in rows:
+    print(row.screen_stock_name, "→", row.peer_name, row.pe_ratio)
+```
+
+### `ScreenPeerRow` fields
+
+| Field | Description |
+|---|---|
+| `screen_stock_name` | Name of the stock from the screen |
+| `screen_stock_ticker` | Ticker extracted from its screener.in URL |
+| `peer_name` | Name of the peer company |
+| `peer_ticker` | Ticker of the peer |
+| `current_price` | CMP (Rs.) |
+| `pe_ratio` | P/E |
+| `market_cap` | Mar Cap (Rs. Cr.) |
+| `div_yield` | Div Yld % |
+| `net_profit_qtr` | NP Qtr (Rs. Cr.) |
+| `qtr_profit_var` | Qtr Profit Var % |
+| `sales_qtr` | Sales Qtr (Rs. Cr.) |
+| `qtr_sales_var` | Qtr Sales Var % |
+| `roce` | ROCE % |
+| `extra` | Any additional peer columns (dict) |
+
+Stocks where peer fetching fails are skipped with a stderr warning — the rest of the run continues.
+
+---
+
 ## Adding a new utility
 
 1. Create `screener/<utility_name>.py`
-2. Accept a `ScreenerClient` as the first argument and call `client.get(url)` — auth is handled for you
-3. Return a typed dataclass (add it to `models.py`)
-4. Add an entry point script at the root if needed
+2. Accept a `ScreenerClient` as the first argument — auth is handled for you, and a single client shares one login across all calls
+3. Compose from existing modules (`screens`, `peers`, `screen_peers`) or call `client.get(url)` directly
+4. Return typed data (add new dataclasses to `models.py` if needed)
+5. Add a runner script at `screener/run_<utility_name>.py` following the same pattern
 
-The `ScreenerClient` maintains a single session across all calls, so multiple utilities in one script share one login.
+The `ScreenerClient` maintains a single session, so chaining multiple utilities in one script costs only one login.
+
+claude --resume e8b63155-44a8-42e0-a4c0-339a7e1a328c

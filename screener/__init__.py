@@ -1,4 +1,4 @@
 from .client import ScreenerClient
-from . import peers, screens
+from . import peers, screens, screen_peers, unique_peers, results_check
 
-__all__ = ["ScreenerClient", "peers", "screens"]
+__all__ = ["ScreenerClient", "peers", "screens", "screen_peers", "unique_peers", "results_check"]

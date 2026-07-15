@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from typing import Optional, Any
 
@@ -52,6 +54,25 @@ class ScreenResult:
         lines.append(f"{'—' * 70}")
         lines.append(f"Total: {len(self.stocks)} stocks")
         return "\n".join(lines)
+
+
+@dataclass
+class UniquePeer:
+    """A peer company, deduplicated across all screen stocks."""
+    ticker: str
+    name: str
+    peer_of: list[str]                  # screen stock tickers this peer appeared under
+    current_price: Optional[str] = None
+    pe_ratio: Optional[str] = None
+    market_cap: Optional[str] = None
+    div_yield: Optional[str] = None
+    net_profit_qtr: Optional[str] = None
+    qtr_profit_var: Optional[str] = None
+    sales_qtr: Optional[str] = None
+    qtr_sales_var: Optional[str] = None
+    roce: Optional[str] = None
+    latest_quarter: Optional[str] = None   # e.g. "Mar 2026"
+    results_pending: Optional[bool] = None
 
 
 @dataclass

@@ -2,11 +2,14 @@
 run_screen.py — fetch and display all stocks from a screener.in screen.
 
 Usage:
-    python3 run_screen.py https://www.screener.in/screens/3655407/good-results-debt-free/
+    python screener/run_screen.py <screen-url>
 """
 
 import argparse
 import sys
+import os
+
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from screener import ScreenerClient, screens
 
