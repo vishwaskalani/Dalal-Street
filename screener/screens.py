@@ -69,14 +69,25 @@ def fetch(client: ScreenerClient, url: str) -> ScreenResult:
 # ------------------------------------------------------------------
 
 def _normalise_url(url: str) -> str:
-    """Strip any existing page/limit params so we control them cleanly."""
+    """
+    Drop any existing page/limit params so we control them cleanly, while
+    keeping every other param — notably the `query=` that a raw-query screen
+    (/screen/raw/?query=...) carries its whole filter in.
+    """
     parsed = urlparse(url)
-    return urlunparse(parsed._replace(query=""))
+    kept = {
+        k: v for k, v in parse_qs(parsed.query).items()
+        if k not in ("page", "limit")
+    }
+    return urlunparse(parsed._replace(query=urlencode(kept, doseq=True)))
 
 
 def _page_url(base: str, page: int) -> str:
-    params = urlencode({"limit": _PAGE_LIMIT, "page": page})
-    return f"{base}?{params}"
+    parsed = urlparse(base)
+    params = parse_qs(parsed.query)
+    params["limit"] = [str(_PAGE_LIMIT)]
+    params["page"] = [str(page)]
+    return urlunparse(parsed._replace(query=urlencode(params, doseq=True)))
 
 
 def _parse_screen_name(soup: BeautifulSoup) -> str:
