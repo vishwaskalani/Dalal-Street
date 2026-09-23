@@ -1,0 +1,17 @@
+- I want to build another screener tool now for my research
+
+- I have made a screen with FII, DII buying, this screen compares the last quarter holding with the latest one available
+
+- But the problem is that for some companies, these updates come in late. I want to know the companies with increased holdings in the latest quarter. 
+
+- For example only some companies will have Jun 2026 holding data on screener.
+
+- This data appears on the shareholding pattern section of the stock page.
+
+- Also ensure that my ip doesn't get blocked for a large number of calls in no time to screener. One of my tool already accounts this and makes spaced call to the company pages.
+
+- While going through the pages one by one, you can log the stock and the FII and DII holding change. Instead of waiting for the last.
+
+- Build a clean code tool for the above.
+
+- Use the screen : https://www.screener.in/screens/3798218/companiesfiidiibuying/ - only search on these companies, first use the stock scraper from screen to find the stocks and then do the operations.

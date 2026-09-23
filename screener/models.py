@@ -76,6 +76,93 @@ class UniquePeer:
 
 
 @dataclass
+class ShareholdingChange:
+    """
+    A company's shareholding pattern for its latest reported quarter versus the
+    quarter before it, parsed from the shareholding-pattern section.
+
+    Percentages are floats (e.g. 26.07 for "26.07%"); None when a value is
+    missing or the section could not be parsed. `shareholders_*` is a plain
+    count, not a percentage.
+    """
+    name: str
+    url: str                              # screener.in relative URL, e.g. /company/MCX/
+    latest_quarter: Optional[str] = None  # e.g. "Sep 2026" — newest column present
+    prev_quarter: Optional[str] = None    # the column immediately before it
+    promoter_latest: Optional[float] = None
+    promoter_prev: Optional[float] = None
+    fii_latest: Optional[float] = None
+    fii_prev: Optional[float] = None
+    dii_latest: Optional[float] = None
+    dii_prev: Optional[float] = None
+    government_latest: Optional[float] = None
+    government_prev: Optional[float] = None
+    public_latest: Optional[float] = None
+    public_prev: Optional[float] = None
+    shareholders_latest: Optional[float] = None
+    shareholders_prev: Optional[float] = None
+
+    @staticmethod
+    def _delta(latest: Optional[float], prev: Optional[float]) -> Optional[float]:
+        if latest is None or prev is None:
+            return None
+        return round(latest - prev, 2)
+
+    @property
+    def promoter_change(self) -> Optional[float]:
+        return self._delta(self.promoter_latest, self.promoter_prev)
+
+    @property
+    def fii_change(self) -> Optional[float]:
+        return self._delta(self.fii_latest, self.fii_prev)
+
+    @property
+    def dii_change(self) -> Optional[float]:
+        return self._delta(self.dii_latest, self.dii_prev)
+
+    @property
+    def government_change(self) -> Optional[float]:
+        return self._delta(self.government_latest, self.government_prev)
+
+    @property
+    def public_change(self) -> Optional[float]:
+        return self._delta(self.public_latest, self.public_prev)
+
+    @property
+    def shareholders_change(self) -> Optional[float]:
+        return self._delta(self.shareholders_latest, self.shareholders_prev)
+
+    @property
+    def fii_dii_change(self) -> Optional[float]:
+        """Combined FII + DII move; None only when both legs are missing."""
+        legs = [c for c in (self.fii_change, self.dii_change) if c is not None]
+        return round(sum(legs), 2) if legs else None
+
+    @property
+    def fii_increased(self) -> bool:
+        c = self.fii_change
+        return c is not None and c > 0
+
+    @property
+    def dii_increased(self) -> bool:
+        c = self.dii_change
+        return c is not None and c > 0
+
+    def __str__(self) -> str:
+        def fmt(v: Optional[float], sign: bool = False) -> str:
+            if v is None:
+                return "—"
+            return f"{v:+.2f}" if sign else f"{v:.2f}"
+        return (
+            f"{self.name:<28}  {self.latest_quarter or '—':>9}  "
+            f"Prom {fmt(self.promoter_latest):>6} ({fmt(self.promoter_change, True):>6})  "
+            f"FII {fmt(self.fii_latest):>6} ({fmt(self.fii_change, True):>6})  "
+            f"DII {fmt(self.dii_latest):>6} ({fmt(self.dii_change, True):>6})  "
+            f"Pub {fmt(self.public_latest):>6} ({fmt(self.public_change, True):>6})"
+        )
+
+
+@dataclass
 class PeerTable:
     source_company: str               # ticker used to fetch peers, e.g. "MCX"
     source_url: str
