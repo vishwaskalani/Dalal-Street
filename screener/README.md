@@ -229,3 +229,28 @@ Stocks where peer fetching fails are skipped with a stderr warning — the rest 
 The `ScreenerClient` maintains a single session, so chaining multiple utilities in one script costs only one login.
 
 claude --resume e8b63155-44a8-42e0-a4c0-339a7e1a328c
+
+---
+
+## Daily Shareholding Delta (mailed)
+
+`run_shareholding_delta.py` scans the FII/DII-buying screen every day and reports
+the shareholding patterns that **appeared since the previous run** and are
+**newer than last quarter**.
+
+- **Last quarter** is the latest quarter-end whose SEBI filing deadline
+  (21 days) has passed: Jun 2026 until 21 Oct 2026, then Sep 2026, and so on.
+  Any newer column counts as fresh (Jul/Aug/Sep interim columns included), so
+  no quarter labels are hardcoded.
+- **Delta** means the company's latest quarter moved forward compared with
+  `data/shareholding_state.csv`, the snapshot saved by the previous run.
+
+```bash
+python3 screener/run_shareholding_delta.py                          # writes data/deltas/<date>.csv
+python3 screener/run_shareholding_delta.py --mail-to a@x.com b@y.com
+```
+
+`.github/workflows/shareholding-delta.yml` runs it daily at 20:30 IST (mail
+lands around 21:00 IST), mails the delta CSV, and commits the updated state.
+It needs these repository secrets: `SCREENER_USERNAME`, `SCREENER_PASSWORD`,
+`SMTP_USER` (a Gmail address) and `SMTP_PASSWORD` (a Gmail App Password).

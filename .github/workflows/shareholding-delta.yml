@@ -1,0 +1,55 @@
+name: Shareholding delta mail
+
+# Scans the FII/DII-buying screen on screener.in, finds shareholding patterns
+# newer than last quarter that appeared since the previous run, and mails them.
+# 15:00 UTC = 20:30 IST daily; the scan takes a while (≈1 s per company),
+# so the mail lands around 21:00 IST.
+on:
+  schedule:
+    - cron: "0 15 * * *"
+  workflow_dispatch:        # lets you run it on demand from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: shareholding-delta
+  cancel-in-progress: false
+
+jobs:
+  delta:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml python-dotenv
+
+      - name: Scan and mail delta
+        env:
+          SCREENER_USERNAME: ${{ secrets.SCREENER_USERNAME }}
+          SCREENER_PASSWORD: ${{ secrets.SCREENER_PASSWORD }}
+          SMTP_USER:         ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD:     ${{ secrets.SMTP_PASSWORD }}
+        run: >
+          python screener/run_shareholding_delta.py
+          --mail-to kalanivishwas33@gmail.com kalani.deepak@icai.org
+
+      - name: Commit state and delta
+        run: |
+          git add screener/data
+          if git diff --cached --quiet; then
+            echo "Nothing changed — nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "chore: shareholding delta $(TZ=Asia/Kolkata date +%F)"
+          git pull --rebase
+          git push
