@@ -1,1 +1,7 @@
 name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+OBSC Perfection,OBSCP,/company/OBSCP/,931.25,2406.87,Sep 2026,Jun 2026,True,69.81,66.24,-3.57,0.64,5.1,4.46,1.6,2.5,0.9,,,,27.95,26.16,-1.79,2770.0,3034.0,264.0
+Granules India,GRANULES,/company/GRANULES/consolidated/,853.00,23274.88,Sep 2026,Jun 2026,True,38.01,37.39,-0.62,17.5,20.29,2.79,16.11,15.4,-0.71,,,,28.36,26.93,-1.43,169422.0,182080.0,12658.0
+Commerl. Synbags,COMSYN,/company/COMSYN/,292.50,1223.02,Sep 2026,Jun 2026,True,59.18,60.75,1.57,0.0,1.59,1.59,0.06,0.05,-0.01,,,,40.77,37.6,-3.17,5378.0,5715.0,337.0
+Bharat Forge,BHARATFORG,/company/BHARATFORG/consolidated/,1998.90,95756.27,Sep 2026,Jun 2026,True,44.07,43.12,-0.95,15.04,15.19,0.15,32.18,32.86,0.68,0.15,0.0,-0.15,8.54,8.84,0.3,232361.0,227796.0,-4565.0
+Jaykay Enter.,JAYKAY,/company/JAYKAY/consolidated/,202.53,3053.33,Sep 2026,Jun 2026,True,65.19,66.01,0.82,0.17,0.27,0.1,0.0,0.0,0.0,,,,34.64,33.71,-0.93,86703.0,89445.0,2742.0
+Unihealth Hosp,UNIHEALTH,/company/UNIHEALTH/consolidated/,656.00,1043.04,Sep 2026,Mar 2026,True,69.53,64.82,-4.71,0.0,0.01,0.01,0.48,0.45,-0.03,,,,29.99,34.73,4.74,1162.0,1210.0,48.0
