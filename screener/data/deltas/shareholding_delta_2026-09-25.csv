@@ -1,1 +1,3 @@
 name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+TIL,TIL,/company/TIL/consolidated/,254.75,2103.16,Sep 2026,Jun 2026,True,61.3,61.3,0.0,2.62,2.66,0.04,3.8,3.3,-0.5,,,,32.28,32.73,0.45,11412.0,14689.0,3277.0
+Onemi Technology,KISSHT,/company/KISSHT/consolidated/,345.55,6125.55,Aug 2026,Jun 2026,True,24.8,23.57,-1.23,7.64,7.82,0.18,19.05,17.63,-1.42,,,,48.52,50.98,2.46,36039.0,34544.0,-1495.0
