@@ -1,0 +1,4 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Canara Bank,CANBK,/company/CANBK/consolidated/,118.36,107360.23,Sep 2026,Jun 2026,True,62.93,62.93,0.0,12.68,12.27,-0.41,11.91,12.37,0.46,,,,12.48,12.43,-0.05,1521088.0,1510319.0,-10769.0
+Orchid Pharma,ORCHPHARMA,/company/ORCHPHARMA/consolidated/,990.00,5928.63,Sep 2026,Jun 2026,True,69.84,74.45,4.61,0.8,0.92,0.12,20.75,17.54,-3.21,,,,8.62,7.08,-1.54,33433.0,33260.0,-173.0
+Baazar Style,STYLEBAAZA,/company/STYLEBAAZA/,368.35,2803.78,Sep 2026,Jun 2026,True,44.8,37.63,-7.17,1.69,2.08,0.39,5.94,1.36,-4.58,,,,47.55,58.95,11.4,58870.0,52654.0,-6216.0
