@@ -1,0 +1,6 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Meesho,MEESHO,/company/MEESHO/consolidated/,226.50,104836.00,Sep 2026,Jun 2026,True,16.41,16.34,-0.07,5.19,9.84,4.65,9.14,13.6,4.46,0.0,0.07,0.07,69.26,60.18,-9.08,246157.0,219369.0,-26788.0
+Aditya Infotech,CPPLUS,/company/CPPLUS/consolidated/,3989.50,48922.02,Sep 2026,Jun 2026,True,74.71,71.8,-2.91,6.35,6.99,0.64,13.61,15.8,2.19,,,,5.34,5.41,0.07,58182.0,68747.0,10565.0
+C P C L,CHENNPETRO,/company/CHENNPETRO/consolidated/,1401.00,20862.49,Sep 2026,Jun 2026,True,67.29,67.29,0.0,14.98,15.79,0.81,1.01,1.18,0.17,,,,16.71,15.76,-0.95,149620.0,157141.0,7521.0
+DLF,DLF,/company/DLF/consolidated/,673.00,166588.48,Sep 2026,Jun 2026,True,74.08,74.08,0.0,12.31,11.43,-0.88,8.03,9.06,1.03,0.01,0.01,0.0,5.56,5.41,-0.15,500743.0,485492.0,-15251.0
+Paisalo Digital,PAISALO,/company/PAISALO/consolidated/,81.13,7416.49,Sep 2026,Jun 2026,True,46.71,46.51,-0.2,6.79,7.37,0.58,6.83,5.89,-0.94,,,,39.66,40.22,0.56,90332.0,80099.0,-10233.0
