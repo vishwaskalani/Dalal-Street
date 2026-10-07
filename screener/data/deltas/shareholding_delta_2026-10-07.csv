@@ -1,1 +1,15 @@
 name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Sanathan Textile,SANATHAN,/company/SANATHAN/consolidated/,518.65,4377.62,Sep 2026,Jun 2026,True,78.58,78.58,0.0,1.47,1.35,-0.12,12.73,13.56,0.83,,,,7.23,6.52,-0.71,24885.0,25104.0,219.0
+Yuken India,YUKEN,/company/YUKEN/consolidated/,1220.40,1657.79,Sep 2026,Jun 2026,True,58.05,58.05,0.0,0.1,0.02,-0.08,0.01,0.68,0.67,,,,41.85,41.26,-0.59,10757.0,10683.0,-74.0
+EMS,EMSLIMITED,/company/EMSLIMITED/consolidated/,328.90,1826.39,Sep 2026,Jun 2026,True,69.7,69.7,0.0,0.14,0.44,0.3,0.05,0.02,-0.03,,,,30.1,29.83,-0.27,120731.0,118809.0,-1922.0
+Sumitomo Chemi.,SUMICHEM,/company/SUMICHEM/,422.50,21088.90,Sep 2026,Jun 2026,True,75.0,75.0,0.0,3.02,2.89,-0.13,9.33,9.68,0.35,,,,12.65,12.42,-0.23,110464.0,109118.0,-1346.0
+Dodla Dairy,DODLA,/company/DODLA/consolidated/,1016.35,6131.41,Sep 2026,Jun 2026,True,58.92,58.92,0.0,6.08,6.06,-0.02,25.85,26.09,0.24,,,,9.16,8.94,-0.22,33213.0,32389.0,-824.0
+Websol Energy,WEBELSOLAR,/company/WEBELSOLAR/,70.76,3072.20,Sep 2026,Jun 2026,True,29.72,29.72,0.0,3.74,4.17,0.43,0.43,0.21,-0.22,,,,66.12,65.91,-0.21,164654.0,173175.0,8521.0
+Grindwell Norton,GRINDWELL,/company/GRINDWELL/consolidated/,2020.15,22367.09,Sep 2026,Jun 2026,True,58.04,58.04,0.0,5.21,5.34,0.13,19.59,19.66,0.07,,,,17.17,16.95,-0.22,45545.0,44141.0,-1404.0
+Sharda Cropchem,SHARDACROP,/company/SHARDACROP/consolidated/,741.65,6691.21,Sep 2026,Jun 2026,True,74.82,74.82,0.0,3.12,3.27,0.15,9.18,9.22,0.04,,,,12.88,12.69,-0.19,63572.0,75739.0,12167.0
+D-Link India,DLINKINDIA,/company/DLINKINDIA/consolidated/,418.50,1485.88,Sep 2026,Jun 2026,True,51.02,51.02,0.0,1.35,1.43,0.08,0.01,0.01,0.0,,,,47.62,47.54,-0.08,73430.0,76319.0,2889.0
+Jyoti Resins,JYOTIRES,/company/JYOTIRES/,846.70,1016.04,Sep 2026,Jun 2026,True,54.37,54.75,0.38,0.06,0.06,0.0,0.08,0.14,0.06,,,,45.5,45.05,-0.45,44791.0,43527.0,-1264.0
+Garden Reach Sh.,GRSE,/company/GRSE/,2110.00,24170.48,Sep 2026,Jun 2026,True,74.5,74.5,0.0,3.21,3.17,-0.04,1.93,2.01,0.08,,,,20.36,20.33,-0.03,399380.0,399640.0,260.0
+Divi's Lab.,DIVISLAB,/company/DIVISLAB/consolidated/,9593.00,254663.94,Sep 2026,Jun 2026,True,51.88,51.87,-0.01,20.19,20.38,0.19,19.29,19.08,-0.21,0.09,0.09,0.0,8.53,8.58,0.05,226324.0,232256.0,5932.0
+Varroc Engineer,VARROC,/company/VARROC/consolidated/,823.25,12578.08,Sep 2026,Jun 2026,True,75.0,75.0,0.0,4.29,4.49,0.2,11.18,10.83,-0.35,,,,9.53,9.68,0.15,83288.0,84702.0,1414.0
+Shyam Metalics,SHYAMMETL,/company/SHYAMMETL/consolidated/,1067.85,29807.11,Sep 2026,Jun 2026,True,74.59,74.59,0.0,2.97,5.29,2.32,13.75,11.16,-2.59,,,,8.42,8.71,0.29,100443.0,98522.0,-1921.0
