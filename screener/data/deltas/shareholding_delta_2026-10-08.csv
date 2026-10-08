@@ -1,1 +1,21 @@
 name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Billionbrains,GROWW,/company/GROWW/consolidated/,190.80,119700.20,Sep 2026,Jun 2026,True,27.14,27.14,0.0,6.89,10.9,4.01,10.08,12.73,2.65,,,,54.78,48.23,-6.55,767929.0,861003.0,93074.0
+Corona Remedies,CORONA,/company/CORONA/,1983.30,12129.89,Sep 2026,Jun 2026,True,69.0,69.0,0.0,3.63,4.21,0.58,12.9,16.44,3.54,,,,14.47,10.35,-4.12,20185.0,21098.0,913.0
+Morepen Labs.,MOREPENLAB,/company/MOREPENLAB/consolidated/,139.55,7646.69,Sep 2026,Jun 2026,True,35.66,35.66,0.0,1.46,3.43,1.97,1.28,1.7,0.42,0.01,0.01,0.0,61.59,59.19,-2.4,434912.0,403932.0,-30980.0
+Jupiter Life Lin,JLHL,/company/JLHL/consolidated/,246.90,8094.14,Sep 2026,Jun 2026,True,40.91,40.91,0.0,9.37,9.13,-0.24,16.51,19.13,2.62,,,,33.2,30.85,-2.35,33194.0,33255.0,61.0
+Sri Lotus,LOTUSDEV,/company/LOTUSDEV/consolidated/,239.95,11726.93,Sep 2026,Jun 2026,True,81.87,79.87,-2.0,1.2,4.18,2.98,1.73,0.88,-0.85,,,,15.19,15.07,-0.12,96724.0,76317.0,-20407.0
+Gujarat Kidney,GKSL,/company/GKSL/consolidated/,182.10,1435.71,Sep 2026,Jun 2026,True,71.45,71.45,0.0,4.89,6.52,1.63,0.56,0.25,-0.31,,,,23.1,21.77,-1.33,18301.0,12986.0,-5315.0
+Shilpa Medicare,SHILPAMED,/company/SHILPAMED/consolidated/,1024.55,20038.33,Sep 2026,Jun 2026,True,40.13,40.13,0.0,11.39,12.11,0.72,8.05,8.26,0.21,,,,40.42,39.49,-0.93,60926.0,87477.0,26551.0
+TD Power Systems,TDPOWERSYS,/company/TDPOWERSYS/consolidated/,801.60,25146.74,Sep 2026,Jun 2026,True,26.87,27.15,0.28,26.18,22.86,-3.32,23.88,27.94,4.06,,,,23.07,22.05,-1.02,134081.0,149005.0,14924.0
+Subex,SUBEXLTD,/company/SUBEXLTD/consolidated/,18.45,1040.01,Sep 2026,Jun 2026,True,,,,0.6,1.08,0.48,0.0,0.0,0.0,,,,98.14,97.65,-0.49,333893.0,336980.0,3087.0
+M R P L,MRPL,/company/MRPL/consolidated/,174.80,30635.38,Sep 2026,Jun 2026,True,88.58,88.58,0.0,2.17,2.45,0.28,0.39,0.53,0.14,,,,8.86,8.42,-0.44,481301.0,471189.0,-10112.0
+PSP Projects,PSPPROJECT,/company/PSPPROJECT/consolidated/,746.90,2960.83,Sep 2026,Jun 2026,True,68.82,68.82,0.0,2.1,2.29,0.19,2.91,3.04,0.13,,,,26.18,25.86,-0.32,32640.0,31952.0,-688.0
+Bajaj Consumer,BAJAJCON,/company/BAJAJCON/consolidated/,491.95,6425.77,Sep 2026,Jun 2026,True,42.97,42.97,0.0,16.11,16.39,0.28,14.91,14.9,-0.01,,,,25.99,25.74,-0.25,122807.0,119806.0,-3001.0
+J Kumar Infra,JKIL,/company/JKIL/,431.10,3261.95,Sep 2026,Jun 2026,True,46.64,46.64,0.0,11.68,11.8,0.12,15.16,15.26,0.1,,,,26.52,26.29,-0.23,50819.0,49962.0,-857.0
+Zydus Lifesci.,ZYDUSLIFE,/company/ZYDUSLIFE/consolidated/,1116.00,111321.44,Sep 2026,Jun 2026,True,75.02,75.01,-0.01,6.89,7.05,0.16,11.27,11.28,0.01,0.0,0.0,0.0,6.83,6.66,-0.17,399251.0,382067.0,-17184.0
+Apollo Hospitals,APOLLOHOSP,/company/APOLLOHOSP/consolidated/,7627.50,109671.63,Sep 2026,Jun 2026,True,28.02,28.02,0.0,41.49,43.19,1.7,23.72,22.07,-1.65,0.23,0.23,0.0,6.53,6.49,-0.04,174281.0,172863.0,-1418.0
+Ircon Intl.,IRCON,/company/IRCON/consolidated/,103.55,9739.01,Sep 2026,Jun 2026,True,65.17,65.17,0.0,4.61,4.62,0.01,1.79,1.81,0.02,0.28,0.28,0.0,28.16,28.12,-0.04,1080370.0,1055399.0,-24971.0
+Disa India,DISAQ,/company/DISAQ/consolidated/,11660.00,1695.61,Sep 2026,Jun 2026,True,74.82,74.82,0.0,0.02,0.03,0.01,8.31,8.31,0.0,,,,16.86,16.85,-0.01,4735.0,4856.0,121.0
+Sai Life,SAILIFE,/company/SAILIFE/consolidated/,1505.45,31978.54,Sep 2026,Jun 2026,True,34.53,34.5,-0.03,19.65,19.91,0.26,32.71,32.32,-0.39,,,,13.11,13.25,0.14,125096.0,143124.0,18028.0
+Muthoot Microfin,MUTHOOTMF,/company/MUTHOOTMF/,168.45,2871.96,Sep 2026,Jun 2026,True,55.47,55.47,0.0,23.11,23.19,0.08,3.38,3.07,-0.31,,,,16.45,16.67,0.22,136798.0,133101.0,-3697.0
+Monolithisch Ind,MONOLITH,/company/MONOLITH/consolidated/,1266.00,2751.79,Sep 2026,Jun 2026,True,74.27,74.57,0.3,1.79,1.61,-0.18,2.82,2.76,-0.06,,,,21.12,21.06,-0.06,2102.0,2229.0,127.0
