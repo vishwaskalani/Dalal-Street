@@ -1,0 +1,5 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Kabra Extrusion,KABRAEXTRU,/company/KABRAEXTRU/consolidated/,771.05,2672.54,Oct 2026,Sep 2026,True,60.44,59.47,-0.97,1.61,1.73,0.12,0.68,1.82,1.14,,,,37.27,36.99,-0.28,25359.0,25367.0,8.0
+Dredging Corpn.,DREDGECORP,/company/DREDGECORP/,905.05,2542.47,Sep 2026,Jun 2026,True,73.47,73.47,0.0,1.03,0.75,-0.28,6.68,7.46,0.78,0.04,0.04,0.0,18.79,18.29,-0.5,49078.0,48011.0,-1067.0
+Simplex Infra,SIMPLEXINF,/company/SIMPLEXINF/consolidated/,243.35,1925.31,Sep 2026,Jun 2026,True,35.99,35.99,0.0,0.39,0.49,0.1,6.59,6.59,0.0,,,,57.02,56.92,-0.1,14881.0,14695.0,-186.0
+Gujarat Alkalies,GUJALKALI,/company/GUJALKALI/consolidated/,596.65,4383.57,Sep 2026,Jun 2026,True,47.28,47.28,0.0,3.26,3.26,0.0,3.02,2.7,-0.32,,,,46.44,46.77,0.33,64106.0,65782.0,1676.0
