@@ -1,0 +1,19 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Sangam India,SANGAMIND,/company/SANGAMIND/,604.80,3038.91,Sep 2026,Jun 2026,True,70.52,70.52,0.0,2.5,2.45,-0.05,0.09,10.18,10.09,,,,25.04,14.96,-10.08,9684.0,9755.0,71.0
+Kamdhenu,KAMDHENU,/company/KAMDHENU/,36.47,1028.03,Sep 2026,Jun 2026,True,49.03,49.03,0.0,2.06,1.65,-0.41,0.03,2.09,2.06,,,,48.89,47.24,-1.65,48824.0,45519.0,-3305.0
+PG Electroplast,PGEL,/company/PGEL/consolidated/,511.80,14676.23,Sep 2026,Jun 2026,True,43.37,43.2,-0.17,9.95,8.72,-1.23,23.88,26.58,2.7,,,,22.71,21.38,-1.33,220368.0,208164.0,-12204.0
+VRL Logistics,VRLLOG,/company/VRLLOG/,284.15,4970.83,Sep 2026,Jun 2026,True,60.24,60.24,0.0,2.68,3.69,1.01,24.92,24.5,-0.42,,,,12.16,11.56,-0.6,80971.0,77635.0,-3336.0
+MMP Industries,MMP,/company/MMP/consolidated/,501.35,1273.56,Sep 2026,Jun 2026,True,74.49,74.48,-0.01,0.02,0.45,0.43,0.0,0.1,0.1,,,,25.49,24.97,-0.52,11202.0,10488.0,-714.0
+InfoBeans Tech.,INFOBEAN,/company/INFOBEAN/consolidated/,156.19,1514.65,Sep 2026,Jun 2026,True,72.82,72.17,-0.65,0.41,0.48,0.07,0.0,0.12,0.12,,,,26.77,27.22,0.45,34367.0,34061.0,-306.0
+G M Breweries,GMBREW,/company/GMBREW/,885.75,2023.67,Sep 2026,Jun 2026,True,74.43,74.43,0.0,0.61,0.74,0.13,0.0,0.0,0.0,,,,24.97,24.84,-0.13,48929.0,46772.0,-2157.0
+Adani Total Gas,ATGL,/company/ATGL/,563.45,61968.80,Sep 2026,Jun 2026,True,74.8,74.8,0.0,12.77,12.84,0.07,6.34,6.38,0.04,,,,6.07,5.97,-0.1,596758.0,577207.0,-19551.0
+Banco Products,BANCOINDIA,/company/BANCOINDIA/consolidated/,590.80,8450.64,Sep 2026,Jun 2026,True,67.88,67.88,0.0,3.92,3.97,0.05,0.24,0.28,0.04,,,,27.98,27.85,-0.13,76328.0,75510.0,-818.0
+Venus Remedies,VENUSREM,/company/VENUSREM/consolidated/,1610.10,2152.22,Sep 2026,Jun 2026,True,41.76,41.76,0.0,2.92,3.14,0.22,0.89,0.74,-0.15,,,,54.44,54.37,-0.07,21905.0,22968.0,1063.0
+DDev Plastiks,DDEVPLSTIK,/company/DDEVPLSTIK/,244.17,2526.59,Sep 2026,Jun 2026,True,74.99,74.99,0.0,1.47,1.56,0.09,0.09,0.06,-0.03,,,,23.46,23.39,-0.07,33896.0,34819.0,923.0
+Adani Ports,ADANIPORTS,/company/ADANIPORTS/consolidated/,1761.00,405727.20,Sep 2026,Jun 2026,True,66.03,66.03,0.0,15.58,15.95,0.37,13.6,13.26,-0.34,,,,4.79,4.78,-0.01,1072323.0,1070249.0,-2074.0
+Jindal Stain.,JSL,/company/JSL/consolidated/,709.05,58455.47,Sep 2026,Jun 2026,True,62.04,62.54,0.5,20.45,20.07,-0.38,7.35,7.73,0.38,,,,10.12,9.61,-0.51,211641.0,203646.0,-7995.0
+Happy Forgings,HAPPYFORGE,/company/HAPPYFORGE/consolidated/,1922.60,18149.56,Sep 2026,Jun 2026,True,78.46,78.44,-0.02,1.88,2.37,0.49,15.54,14.93,-0.61,,,,4.12,4.26,0.14,64341.0,65550.0,1209.0
+Vardhman Textile,VTL,/company/VTL/consolidated/,528.20,15295.45,Sep 2026,Jun 2026,True,65.08,65.06,-0.02,6.07,6.43,0.36,14.69,14.16,-0.53,,,,14.15,14.35,0.2,84595.0,84086.0,-509.0
+Unimech Aero.,UNIMECH,/company/UNIMECH/consolidated/,1734.80,8830.48,Sep 2026,Jun 2026,True,79.82,79.75,-0.07,0.43,1.01,0.58,5.6,4.66,-0.94,,,,14.16,14.59,0.43,73718.0,77694.0,3976.0
+Cosmic CRF,543928,/company/543928/consolidated/,1161.15,1103.40,Sep 2026,Mar 2026,True,55.11,56.54,1.43,0.09,0.09,0.0,10.39,9.99,-0.4,,,,34.42,33.37,-1.05,3452.0,3269.0,-183.0
+Vardhman Special,VSSL,/company/VSSL/,373.40,3613.71,Sep 2026,Jun 2026,True,51.06,51.18,0.12,0.55,0.58,0.03,3.27,2.51,-0.76,,,,45.12,45.73,0.61,36365.0,37253.0,888.0
