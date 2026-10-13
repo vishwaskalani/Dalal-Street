@@ -1,0 +1,18 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Pine Labs,PINELABS,/company/PINELABS/consolidated/,165.34,19106.69,Sep 2026,Jun 2026,True,,,,9.49,13.18,3.69,24.82,29.57,4.75,,,,65.68,57.24,-8.44,178120.0,268596.0,90476.0
+South Ind.Bank,SOUTHBANK,/company/SOUTHBANK/,49.13,12869.62,Sep 2026,Jun 2026,True,,,,25.39,25.57,0.18,14.24,16.78,2.54,,,,60.36,57.65,-2.71,1143415.0,1124648.0,-18767.0
+Swiggy,SWIGGY,/company/SWIGGY/consolidated/,232.40,64024.42,Sep 2026,Jun 2026,True,,,,13.96,8.86,-5.1,27.38,34.49,7.11,,,,53.57,51.67,-1.9,570439.0,578707.0,8268.0
+J & K Bank,J&KBANK,/company/J&KBANK/consolidated/,139.17,15339.60,Sep 2026,Jun 2026,True,59.4,59.4,0.0,9.38,11.62,2.24,7.85,7.42,-0.43,,,,23.37,21.57,-1.8,219636.0,216319.0,-3317.0
+Brainbees Solut.,FIRSTCRY,/company/FIRSTCRY/consolidated/,178.03,9309.64,Sep 2026,Jun 2026,True,,,,3.61,5.63,2.02,22.71,22.08,-0.63,,,,66.7,65.34,-1.36,145922.0,156414.0,10492.0
+Aequs,AEQUS,/company/AEQUS/consolidated/,265.10,17779.35,Sep 2026,Jun 2026,True,59.09,59.09,0.0,5.17,5.93,0.76,8.85,9.28,0.43,,,,24.62,23.46,-1.16,53564.0,100201.0,46637.0
+Yes Bank,YESBANK,/company/YESBANK/consolidated/,20.85,65511.76,Sep 2026,Jun 2026,True,,,,46.12,47.83,1.71,24.04,23.06,-0.98,0.01,0.01,0.0,29.83,29.11,-0.72,5844167.0,5756004.0,-88163.0
+Zydus Wellness,ZYDUSWELL,/company/ZYDUSWELL/consolidated/,499.45,15897.01,Sep 2026,Jun 2026,True,69.63,69.63,0.0,3.32,3.57,0.25,19.13,19.39,0.26,,,,7.92,7.42,-0.5,86866.0,86160.0,-706.0
+AYM Syntex,AYMSYNTEX,/company/AYMSYNTEX/,276.20,1628.82,Sep 2026,Jun 2026,True,65.73,65.67,-0.06,3.62,3.71,0.09,0.48,0.51,0.03,,,,30.18,30.1,-0.08,8140.0,8678.0,538.0
+Alembic,ALEMBICLTD,/company/ALEMBICLTD/consolidated/,98.27,2528.73,Sep 2026,Jun 2026,True,70.88,71.4,0.52,1.25,1.34,0.09,0.06,0.05,-0.01,,,,27.82,27.2,-0.62,101238.0,100706.0,-532.0
+NTPC Green Ene.,NTPCGREEN,/company/NTPCGREEN/consolidated/,92.84,78230.04,Sep 2026,Jun 2026,True,89.01,89.01,0.0,1.67,1.58,-0.09,5.21,5.29,0.08,,,,4.12,4.12,0.0,1230466.0,1212310.0,-18156.0
+Kalyani Invest.,KICL,/company/KICL/consolidated/,4867.30,2135.56,Sep 2026,Jun 2026,True,74.98,74.98,0.0,0.64,0.64,0.0,0.56,0.53,-0.03,,,,23.8,23.84,0.04,23781.0,23331.0,-450.0
+Bajaj Hindusthan,BAJAJHIND,/company/BAJAJHIND/consolidated/,21.42,5118.39,Sep 2026,Jun 2026,True,13.33,13.33,0.0,1.14,1.11,-0.03,50.67,50.58,-0.09,,,,34.78,34.89,0.11,754171.0,767202.0,13031.0
+Navkar Corporat.,NAVKARCORP,/company/NAVKARCORP/,85.14,1281.98,Sep 2026,Jun 2026,True,70.37,70.37,0.0,0.67,0.47,-0.2,0.02,0.05,0.03,,,,28.94,29.1,0.16,59524.0,61362.0,1838.0
+G S F C,GSFC,/company/GSFC/consolidated/,147.04,5857.24,Sep 2026,Jun 2026,True,37.84,37.84,0.0,12.36,12.51,0.15,7.32,5.83,-1.49,5.65,5.65,0.0,36.82,38.16,1.34,298987.0,294555.0,-4432.0
+Fairchem Organic,FAIRCHEMOR,/company/FAIRCHEMOR/,806.55,1015.18,Sep 2026,Jun 2026,True,63.25,63.25,0.0,6.34,6.37,0.03,2.8,1.42,-1.38,,,,27.6,28.96,1.36,25690.0,24621.0,-1069.0
+Sahana Systems,SAHANA,/company/SAHANA/consolidated/,947.55,1004.83,Aug 2026,Jun 2026,True,57.31,57.31,0.0,0.96,0.76,-0.2,0.6,0.82,0.22,,,,41.14,41.11,-0.03,3382.0,3468.0,86.0
