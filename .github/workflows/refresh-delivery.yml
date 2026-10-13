@@ -30,7 +30,7 @@ jobs:
 
       - name: Rebuild snapshot
         working-directory: delivery-momentum
-        run: python refresh.py --days 30
+        run: python refresh.py
 
       - name: Commit if changed
         run: |

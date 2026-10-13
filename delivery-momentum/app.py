@@ -28,24 +28,13 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# Sequential blue ramp (light→dark) for magnitude. Direction is carried by
-# x-position and by the signed number in the table, so colour is free to encode
-# something that isn't already on screen — here, the delivery surge.
-SEQ = ["#cde2fb", "#9ec5f4", "#6da7ec", "#3987e5", "#2a78d6", "#1c5cab", "#104281"]
-INK, MUTED, GRID = "#0b0b0b", "#52514e", "#e5e4e0"
+ACCENT, INK, MUTED, GRID = "#2a78d6", "#0b0b0b", "#52514e", "#e5e4e0"
 
 st.markdown(
     """
     <style>
-      .block-container { padding-top: 2rem; padding-bottom: 3rem; max-width: 1400px; }
-      [data-testid="stMetricValue"] { font-variant-numeric: tabular-nums;
-          font-feature-settings: "tnum"; font-size: 1.55rem; }
-      [data-testid="stMetricLabel"] { text-transform: uppercase; letter-spacing: .06em;
-          font-size: .7rem; opacity: .7; }
+      .block-container { padding-top: 2rem; padding-bottom: 3rem; max-width: 1200px; }
       div[data-testid="stDataFrame"] { font-variant-numeric: tabular-nums; }
-      .dm-tag { display:inline-block; font-size:.72rem; letter-spacing:.08em;
-          text-transform:uppercase; color:#2a78d6; border:1px solid #2a78d633;
-          background:#2a78d614; padding:2px 9px; border-radius:999px; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -105,292 +94,176 @@ def get_panel() -> pd.DataFrame | None:
     return nse_data.load_panel()
 
 
+@st.cache_data(ttl=1800, show_spinner=False)
+def get_scans(panel: pd.DataFrame) -> dict[str, pd.DataFrame]:
+    return {k: scan.build_scan(panel, w) for k, w in scan.WINDOWS.items()}
+
+
 panel = get_panel()
 
 if panel is None or panel.empty:
     st.title("📦 Delivery Momentum")
-    st.error(
-        "**No data snapshot found.**\n\n"
-        "Run `python refresh.py` in this folder to build `data/panel.csv.gz`, "
-        "then commit it."
-    )
+    st.error("**No data snapshot found.** Run `python refresh.py` in this folder "
+             "to build `data/panel.csv.gz`, then commit it.")
     st.stop()
 
-n_days = panel["DATE"].nunique()
 last_date = pd.Timestamp(panel["DATE"].max())
+scans = get_scans(panel)
 
-# ── Header ────────────────────────────────────────────────────────────────────
-st.markdown('<span class="dm-tag">NSE Delivery Scan</span>', unsafe_allow_html=True)
+# ── Header + the only two controls ────────────────────────────────────────────
 st.title("📦 Delivery Momentum")
 st.caption(
-    "Stocks that moved sharply **and** had real delivery behind the move — "
-    "shares that actually changed hands, not intraday churn. "
-    f"Data through **{last_date:%d %b %Y}** ({n_days} trading days on file)."
+    "Stocks where **delivery** (shares bought and kept, not day-traded) has stepped "
+    f"up steadily against their own last {scan.BASELINE} trading days. "
+    f"Data through **{last_date:%d %b %Y}**."
 )
 
-# ── Controls ──────────────────────────────────────────────────────────────────
-c1, c2, c3, c4 = st.columns([1, 1, 1, 1])
+c1, c2 = st.columns([3, 2])
+tf = c1.radio("Timeframe", list(scan.WINDOWS), index=1, horizontal=True,
+              help="3D is the earliest but noisiest read; 1W–1M are more reliable.")
+strength = c2.radio("Delivery surge", ["2× or more", "3× or more"], horizontal=True,
+                    help="2× gives more ideas; 3× is a stricter, shorter list.")
+min_surge = 2.0 if strength.startswith("2") else 3.0
+window = scan.WINDOWS[tf]
 
-with c1:
-    window = st.selectbox(
-        "Window", [5, 10, 15, 20],
-        format_func=lambda d: {5: "1 week", 10: "2 weeks",
-                               15: "3 weeks", 20: "1 month"}[d],
-        index=0,
-    )
-with c2:
-    min_move = st.slider("Min price move %", 0.0, 25.0, 5.0, 0.5)
-with c3:
-    direction = st.selectbox(
-        "Direction", ["both", "up", "down"],
-        format_func={"both": "Up or down", "up": "Gainers only",
-                     "down": "Losers only"}.get,
-    )
-with c4:
-    rank_by = st.selectbox(
-        "Rank by",
-        ["DELIV_VAL_CR", "SURGE", "DELIV_PCT", "DELIV_QTY", "MOVE_PCT"],
-        format_func={
-            "DELIV_VAL_CR": "Delivery value (₹ cr)",
-            "SURGE": "Delivery surge (×)",
-            "DELIV_PCT": "Delivery %",
-            "DELIV_QTY": "Delivery quantity",
-            "MOVE_PCT": "Price move %",
-        }.get,
-    )
+res = scan.signals(scans[tf], window, min_surge)
 
-with st.expander("Filters — liquidity, price, segment"):
-    f1, f2, f3 = st.columns(3)
-    min_turnover = f1.number_input("Min weekly turnover (₹ cr)", 0.0, 5000.0, 5.0, 5.0)
-    min_price = f2.number_input("Min share price (₹)", 0.0, 5000.0, 20.0, 10.0)
-    include_be = f3.checkbox(
-        "Include BE (trade-to-trade) series", value=False,
-        help="BE scrips settle at 100% delivery by rule, so their delivery % "
-             "is not a conviction signal.",
-    )
-    st.caption(
-        f"Baseline for surge: the {max(n_days - window, 0)} trading days before "
-        "the window. Turnover and price filters strip out illiquid and penny scrips."
-    )
-
-max_baseline = max(n_days - window, 0)
-series = ("EQ", "BE") if include_be else ("EQ",)
-
-try:
-    res = scan.build_scan(
-        panel, window=window, baseline=max_baseline, min_move=min_move,
-        direction=direction, min_turnover_cr=min_turnover,
-        min_price=min_price, series=series,
-    )
-except ValueError as e:
-    st.error(str(e))
-    st.stop()
-
-# Ranking "by price move" means biggest move of the kind you asked for: most
-# negative when hunting losers, most positive otherwise.
-ascending = rank_by == "MOVE_PCT" and direction == "down"
-res = res.sort_values(rank_by, ascending=ascending,
-                      na_position="last").reset_index(drop=True)
+# Which other timeframes flag the same stock — agreement across timeframes
+# means the build-up isn't a one-window fluke.
+also = {k: set(scan.signals(scans[k], w, min_surge)["SYMBOL"])
+        for k, w in scan.WINDOWS.items()}
+res["ALSO"] = res["SYMBOL"].map(
+    lambda s: " ".join(k for k in scan.WINDOWS if k != tf and s in also[k]))
+res["HOT"] = res["HOT_DAYS"].astype(int).astype(str) + f" / {window}"
 
 first_d, last_d = scan.window_dates(panel, window)
-
-# ── Summary ───────────────────────────────────────────────────────────────────
-st.markdown(f"**Window:** {first_d} → {last_d}")
+st.markdown(f"**{len(res)} stocks** · window {first_d} → {last_d}")
 
 if res.empty:
-    st.warning("No stocks cleared these filters. Try lowering the minimum move.")
+    st.info("Nothing qualifies right now. Try 2× or a longer timeframe.")
     st.stop()
 
-m1, m2, m3, m4 = st.columns(4)
-m1.metric("Stocks found", f"{len(res):,}")
-m2.metric("Gainers / Losers",
-          f"{(res['MOVE_PCT'] > 0).sum()} / {(res['MOVE_PCT'] < 0).sum()}")
-m3.metric("Total delivery value", f"₹{res['DELIV_VAL_CR'].sum():,.0f} cr")
-m4.metric("Median delivery %", f"{res['DELIV_PCT'].median():.1f}%")
-
-st.divider()
-
 # ── Table ─────────────────────────────────────────────────────────────────────
-show_n = st.slider("Rows to show", 10, min(300, len(res)),
-                   min(50, len(res)), 10) if len(res) > 10 else len(res)
-view = res.head(show_n)
-
 st.dataframe(
-    view,
+    res[["SYMBOL", "SURGE", "HOT", "ALSO", "DELIV_PCT", "BASE_DELIV_PCT",
+         "MOVE_PCT", "CLOSE", "TURNOVER_CR"]],
     use_container_width=True,
-    hide_index=False,
-    height=min(620, 60 + 35 * len(view)),
+    hide_index=True,
+    height=min(560, 40 + 35 * len(res)),
     column_config={
-        "SYMBOL": st.column_config.TextColumn("Symbol", width="medium"),
-        "MOVE_PCT": st.column_config.NumberColumn(
-            "Move %", format="%+.2f%%",
-            help="Close on the last day vs the close before the window started."),
-        "DELIV_VAL_CR": st.column_config.NumberColumn(
-            "Deliv ₹cr", format="%.0f",
-            help="Rupee value of shares delivered during the window."),
-        "DELIV_PCT": st.column_config.ProgressColumn(
-            "Deliv %", format="%.1f%%", min_value=0, max_value=100,
-            help="Delivered quantity as a share of total traded quantity."),
+        "SYMBOL": st.column_config.TextColumn("Stock"),
         "SURGE": st.column_config.NumberColumn(
-            "Surge ×", format="%.2f",
-            help="Daily delivery this window vs the prior baseline. "
-                 "1.0 = normal. Blank = no baseline (recent listing)."),
-        "DELIV_QTY": st.column_config.NumberColumn("Deliv qty", format="%d"),
-        "TURNOVER_CR": st.column_config.NumberColumn("Turnover ₹cr", format="%.0f"),
-        "CLOSE": st.column_config.NumberColumn("Close", format="%.2f"),
-        "PREV_CLOSE": st.column_config.NumberColumn("Start", format="%.2f"),
-        "SERIES": st.column_config.TextColumn("Ser", width="small"),
+            "Surge ×", format="%.1f×",
+            help="Avg daily delivery in the window ÷ its normal level."),
+        "HOT": st.column_config.TextColumn(
+            "Hot days", help="Days in the window with delivery ≥ 1.5× normal. "
+                             "More = steadier accumulation."),
+        "ALSO": st.column_config.TextColumn(
+            "Also on", help="Other timeframes where this stock also qualifies."),
+        "DELIV_PCT": st.column_config.NumberColumn(
+            "Deliv % now", format="%.0f%%",
+            help="Delivered ÷ traded volume in the window."),
+        "BASE_DELIV_PCT": st.column_config.NumberColumn(
+            "Deliv % normal", format="%.0f%%"),
+        "MOVE_PCT": st.column_config.NumberColumn(
+            "Price move", format="%+.1f%%", help="Price change over the window."),
+        "CLOSE": st.column_config.NumberColumn("Close ₹", format="%.2f"),
+        "TURNOVER_CR": st.column_config.NumberColumn(
+            "Avg turnover ₹cr/day", format="%.1f"),
     },
 )
 
-st.download_button(
-    "⬇️  Download this scan as CSV",
-    res.to_csv(index=False).encode(),
-    file_name=f"delivery_momentum_{last_date:%Y%m%d}_{window}d.csv",
-    mime="text/csv",
+# ── One stock, day by day ─────────────────────────────────────────────────────
+st.subheader("Check a stock")
+pick = st.selectbox("Stock", res["SYMBOL"].tolist(), label_visibility="collapsed")
+
+hist = panel[panel["SYMBOL"] == pick].sort_values("DATE")
+dates = sorted(panel["DATE"].unique())
+win_start = pd.Timestamp(dates[-window])
+base_rate = hist[hist["DATE"] < win_start].tail(scan.BASELINE)["DELIV_QTY"].mean()
+hist = hist.tail(window + 40)
+
+fig = go.Figure()
+fig.add_bar(
+    x=hist["DATE"], y=hist["DELIV_QTY"], name="Delivered qty",
+    marker=dict(color=[ACCENT if d >= win_start else "#9ec5f4" for d in hist["DATE"]]),
+    hovertemplate="%{x|%d %b}<br>%{y:,.0f} shares delivered<extra></extra>",
 )
-
-# ── Scatter — move vs delivery value, coloured by surge ────────────────────────
-st.subheader("Move vs delivery value")
-st.caption(
-    "Each dot is a stock. Right of centre gained, left of centre fell — so "
-    "colour is free to show the **surge**: how far this window's delivery runs "
-    "above the stock's own baseline. Dark dots are the unusual ones."
+fig.add_hline(y=base_rate, line_dash="dash", line_color=MUTED, line_width=1,
+              annotation_text="normal", annotation_position="top left",
+              annotation_font=dict(size=10, color=MUTED))
+fig.add_hline(y=base_rate * scan.HOT_MULT, line_dash="dot", line_color=MUTED,
+              line_width=1, annotation_text="hot (1.5×)",
+              annotation_position="top left",
+              annotation_font=dict(size=10, color=MUTED))
+fig.add_scatter(
+    x=hist["DATE"], y=hist["CLOSE_PRICE"], name="Close ₹", yaxis="y2",
+    mode="lines", line=dict(color=INK, width=1.5),
+    hovertemplate="%{x|%d %b}<br>₹%{y:,.2f}<extra></extra>",
 )
-
-plot = view.copy()
-plot["SURGE_C"] = pd.to_numeric(plot["SURGE"], errors="coerce").fillna(1.0).clip(0, 6)
-
-fig = go.Figure(
-    go.Scatter(
-        x=plot["MOVE_PCT"],
-        y=plot["DELIV_VAL_CR"],
-        mode="markers",
-        marker=dict(
-            size=11,
-            color=plot["SURGE_C"],
-            colorscale=[[i / (len(SEQ) - 1), c] for i, c in enumerate(SEQ)],
-            cmin=0, cmax=6,
-            line=dict(width=2, color="#fcfcfb"),  # 2px surface ring on overlap
-            colorbar=dict(
-                title=dict(text="Surge ×", font=dict(size=11)),
-                thickness=12, len=0.7, outlinewidth=0,
-                tickfont=dict(size=10, color=MUTED),
-            ),
-        ),
-        customdata=plot[["SYMBOL", "DELIV_PCT", "SURGE", "CLOSE"]].values,
-        hovertemplate=(
-            "<b>%{customdata[0]}</b><br>"
-            "Move %{x:+.2f}%<br>"
-            "Delivery ₹%{y:,.0f} cr<br>"
-            "Delivery %{customdata[1]:.1f}% of volume<br>"
-            "Surge %{customdata[2]:.2f}×<br>"
-            "Close ₹%{customdata[3]:,.2f}<extra></extra>"
-        ),
-    )
-)
-
-# Direct-label only the extremes — never a label on every point.
-top_lab = pd.concat([
-    plot.nlargest(5, "DELIV_VAL_CR"),
-    plot.nlargest(3, "MOVE_PCT"),
-    plot.nsmallest(3, "MOVE_PCT"),
-]).drop_duplicates("SYMBOL")
-for _, r in top_lab.iterrows():
-    fig.add_annotation(
-        x=r["MOVE_PCT"], y=r["DELIV_VAL_CR"], text=r["SYMBOL"],
-        showarrow=False, yshift=14, font=dict(size=10, color=INK),
-    )
-
-fig.add_vline(x=0, line_width=1, line_color=GRID)
 fig.update_layout(
-    height=520,
-    margin=dict(l=10, r=10, t=10, b=10),
+    height=360, margin=dict(l=10, r=10, t=10, b=10), bargap=0.3,
     plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-    xaxis=dict(title="Price move over window (%)", gridcolor=GRID, zeroline=False,
-               tickfont=dict(color=MUTED), ticksuffix="%"),
-    yaxis=dict(title="Delivery value (₹ cr, log)", type="log", gridcolor=GRID,
-               zeroline=False, tickfont=dict(color=MUTED)),
-    hoverlabel=dict(bgcolor="#fcfcfb", bordercolor=GRID,
-                    font=dict(color=INK, size=12)),
+    showlegend=False,
+    xaxis=dict(gridcolor=GRID, tickfont=dict(color=MUTED)),
+    yaxis=dict(title="Delivered shares", gridcolor=GRID, tickfont=dict(color=MUTED)),
+    yaxis2=dict(title="Close ₹", overlaying="y", side="right", showgrid=False,
+                tickfont=dict(color=MUTED)),
 )
 st.plotly_chart(fig, use_container_width=True)
+st.caption("Dark bars = the scan window. Black line = closing price (right axis).")
 
-# ── Drill-down ────────────────────────────────────────────────────────────────
-st.subheader("Day-by-day detail")
-pick = st.selectbox("Stock", view["SYMBOL"].tolist(), index=0)
-
-hist = panel[panel["SYMBOL"] == pick].sort_values("DATE").tail(max(window * 3, 20)).copy()
-hist["DELIV_VAL_CR"] = hist["DELIV_QTY"] * hist["AVG_PRICE"] / 1e7
-hist["DELIV_PCT"] = hist["DELIV_QTY"] / hist["TTL_TRD_QNTY"].replace(0, pd.NA) * 100
-win_start = pd.Timestamp(sorted(panel["DATE"].unique())[-window])
-
-# Two measures, two charts — never a second y-axis.
-d1, d2 = st.columns(2)
-
-with d1:
-    bar = go.Figure(
-        go.Bar(
-            x=hist["DATE"], y=hist["DELIV_VAL_CR"],
-            marker=dict(color=SEQ[4], line=dict(width=0)),
-            hovertemplate="%{x|%d %b}<br>₹%{y:,.1f} cr delivered<extra></extra>",
-        )
+# ── Extras, tucked away ───────────────────────────────────────────────────────
+sp = scan.spikes(scans[tf])
+with st.expander(f"Block-deal spikes — surge above {scan.MAX_SURGE:.0f}× ({len(sp)})"):
+    st.caption("Usually one large holder moving a stake in a single day. Historically "
+               "these did *not* outperform — check the news before reading them as "
+               "accumulation.")
+    st.dataframe(
+        sp[["SYMBOL", "SURGE", "HOT_DAYS", "MOVE_PCT", "CLOSE"]],
+        hide_index=True, use_container_width=True,
+        column_config={
+            "SYMBOL": "Stock",
+            "SURGE": st.column_config.NumberColumn("Surge ×", format="%.1f×"),
+            "HOT_DAYS": st.column_config.NumberColumn("Hot days"),
+            "MOVE_PCT": st.column_config.NumberColumn("Price move", format="%+.1f%%"),
+            "CLOSE": st.column_config.NumberColumn("Close ₹", format="%.2f"),
+        },
     )
-    bar.add_vline(x=win_start, line_width=1, line_dash="dot", line_color=MUTED)
-    bar.update_layout(
-        title=dict(text=f"{pick} — daily delivery value (₹ cr)",
-                   font=dict(size=13, color=INK)),
-        height=300, margin=dict(l=10, r=10, t=40, b=10), bargap=0.35,
-        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(gridcolor=GRID, tickfont=dict(color=MUTED)),
-        yaxis=dict(gridcolor=GRID, tickfont=dict(color=MUTED)),
-        hoverlabel=dict(bgcolor="#fcfcfb", bordercolor=GRID, font=dict(color=INK)),
-    )
-    st.plotly_chart(bar, use_container_width=True)
 
-with d2:
-    line = go.Figure(
-        go.Scatter(
-            x=hist["DATE"], y=hist["CLOSE_PRICE"], mode="lines",
-            line=dict(color=SEQ[5], width=2),
-            hovertemplate="%{x|%d %b}<br>₹%{y:,.2f}<extra></extra>",
-        )
-    )
-    line.add_vline(x=win_start, line_width=1, line_dash="dot", line_color=MUTED)
-    line.update_layout(
-        title=dict(text=f"{pick} — closing price (₹)",
-                   font=dict(size=13, color=INK)),
-        height=300, margin=dict(l=10, r=10, t=40, b=10),
-        plot_bgcolor="rgba(0,0,0,0)", paper_bgcolor="rgba(0,0,0,0)",
-        xaxis=dict(gridcolor=GRID, tickfont=dict(color=MUTED)),
-        yaxis=dict(gridcolor=GRID, tickfont=dict(color=MUTED)),
-        hoverlabel=dict(bgcolor="#fcfcfb", bordercolor=GRID, font=dict(color=INK)),
-    )
-    st.plotly_chart(line, use_container_width=True)
-
-st.caption("Dotted line marks where the scan window begins.")
-
-with st.expander("What the numbers mean"):
+with st.expander("How to use this"):
     st.markdown(
-        """
-**Delivery quantity** is the slice of a day's traded volume that actually
-settled into someone's demat account. The rest was intraday — bought and sold
-the same day. A big price move on low delivery is usually traders passing stock
-around; the same move on high delivery means someone took a position and kept it.
+        f"""
+**What it shows.** Stocks whose average daily *delivery* in the chosen window is at
+least 2× (or 3×) their normal level — normal being the {scan.BASELINE} trading days
+before the window — **and** that were "hot" (≥ 1.5× normal) on at least half of the
+window's days. Steadiest stocks are listed first.
 
-| Column | Meaning |
-|---|---|
-| **Move %** | Close on the last day of the window vs the close just before it started. |
-| **Deliv ₹cr** | Rupee value delivered across the window. This is the default ranking — raw quantity flatters cheap stocks, since 40 lakh shares of a ₹12 stock is a smaller commitment than 50,000 shares of a ₹3,000 one. |
-| **Deliv %** | Delivered ÷ total traded. Above ~60% is genuine accumulation; under ~25% is mostly churn. |
-| **Surge ×** | This window's daily delivery against the stock's own earlier baseline. **1.0 is business as usual; 3× or more means something changed.** Blank for recent listings with no baseline. |
-| **Turnover ₹cr** | Total traded value — a liquidity check, so thin scrips don't top the list on a single odd trade. |
+**Why these rules.** Backtested on one year of NSE data (Oct 2025 – Oct 2026),
+looking at how stocks did over the next 20 trading days against the median stock:
 
-A very high surge with very high delivery % is often a **block or bulk deal** —
-one large holder moving a stake in a single print. Worth checking the news
-before reading it as broad accumulation.
+- **2–5× surge** was the useful band. Under 2× is noise; over 5× the edge vanished
+  (mostly block deals).
+- **Steady beats spiky.** With a 2–5× surge, stocks hot on most window days beat the
+  median by about 1–1.4% with a 54–55% hit rate. One-day spikes underperformed.
+- **1W to 1M** carry the signal; **3D** is the earliest but noisiest read.
+- Surge that coincides with a big price move over 2W–1M (already up 15%+) tended to
+  keep going — delivery confirming the move, not just predicting it.
 
-*Source: NSE Security-wise Price Volume & Deliverable Position (official daily
-bhavcopy). Information only — not investment advice.*
+**A simple routine.**
+1. Start on **1W**. Scan for stocks that also show **2W** or **1M** in *Also on* —
+   the build-up has lasted.
+2. Prefer a **Deliv % now** clearly above **Deliv % normal**, and a price that hasn't
+   yet run far (catching it early).
+3. Use **3D** to spot fresh starts, then check back in a few days to see whether they
+   graduate to 1W.
+4. Open the chart: steady dark bars above the dotted line are what you want; one tall
+   bar is a block deal.
+
+Filters always applied: EQ series only, price ≥ ₹{scan.MIN_PRICE:.0f}, average turnover ≥
+₹{scan.MIN_TURNOVER_CR:.0f} cr/day, ETFs removed.
+
+*The edges are small and noisy — use this as a research shortlist, not a buy list.
+Source: NSE daily delivery bhavcopy. Not investment advice.*
         """
     )
