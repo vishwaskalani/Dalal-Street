@@ -1,0 +1,6 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Brightcom Group,BCG,/company/BCG/consolidated/,9.00,1812.15,Sep 2026,Jun 2026,True,18.38,18.35,-0.03,1.12,1.49,0.37,0.0,0.0,0.0,,,,80.49,80.14,-0.35,555405.0,543576.0,-11829.0
+Dec.Gold Mines,DECNGOLD,/company/DECNGOLD/consolidated/,179.26,3602.64,Sep 2026,Jun 2026,True,20.53,20.3,-0.23,2.14,2.45,0.31,0.53,0.32,-0.21,,,,76.8,76.93,0.13,61047.0,70513.0,9466.0
+Thejo Engg.,THEJO,/company/THEJO/consolidated/,2022.00,2193.48,Sep 2026,Jun 2026,True,53.61,53.79,0.18,0.85,0.84,-0.01,3.38,3.44,0.06,,,,42.17,41.93,-0.24,8000.0,7737.0,-263.0
+Onward Technolog,ONWARDTEC,/company/ONWARDTEC/consolidated/,453.35,1008.21,Sep 2026,Jun 2026,True,39.97,40.2,0.23,9.32,9.28,-0.04,1.8,1.74,-0.06,,,,47.53,47.25,-0.28,22336.0,21521.0,-815.0
+Indoco Remedies,INDOCO,/company/INDOCO/consolidated/,236.50,2183.87,Sep 2026,Jun 2026,True,58.86,58.92,0.06,1.27,1.64,0.37,17.68,16.64,-1.04,,,,22.04,22.66,0.62,32457.0,34098.0,1641.0
