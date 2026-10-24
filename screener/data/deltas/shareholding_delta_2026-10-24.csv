@@ -1,1 +1,3 @@
 name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Cemindia Project,CEMPRO,/company/CEMPRO/consolidated/,1149.90,21206.80,Oct 2026,Sep 2026,True,67.46,62.84,-4.62,6.65,6.23,-0.42,4.79,11.06,6.27,,,,21.1,19.87,-1.23,102707.0,103365.0,658.0
+ASM Technologies,526433,/company/526433/consolidated/,5744.55,8379.38,Oct 2026,Sep 2026,True,57.44,53.49,-3.95,1.44,1.38,-0.06,0.99,6.88,5.89,,,,40.13,38.25,-1.88,29566.0,29418.0,-148.0
