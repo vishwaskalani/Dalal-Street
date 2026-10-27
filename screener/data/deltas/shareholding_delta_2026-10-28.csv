@@ -1,0 +1,4 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Onemi Technology,KISSHT,/company/KISSHT/consolidated/,307.15,6274.25,Oct 2026,Sep 2026,True,23.46,20.42,-3.04,7.06,9.95,2.89,18.51,24.96,6.45,,,,50.97,44.67,-6.3,33778.0,33191.0,-587.0
+360 ONE,360ONE,/company/360ONE/consolidated/,973.00,41749.22,Oct 2026,Sep 2026,True,6.18,5.88,-0.3,53.97,56.0,2.03,23.66,22.69,-0.97,0.0,0.0,0.0,16.18,15.41,-0.77,82816.0,82762.0,-54.0
+Sambhv Steel,SAMBHV,/company/SAMBHV/,168.57,4970.43,Oct 2026,Sep 2026,True,56.11,56.11,0.0,2.25,1.93,-0.32,3.42,3.56,0.14,0.0,0.0,0.0,38.23,38.39,0.16,71984.0,71027.0,-957.0
