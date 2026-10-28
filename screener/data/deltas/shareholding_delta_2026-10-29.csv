@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Prizor Viztech,PRIZOR,/company/PRIZOR/consolidated/,1292.85,1395.78,Oct 2026,Sep 2026,True,67.93,60.32,-7.61,0.7,2.03,1.33,0.0,1.03,1.03,,,,31.36,36.62,5.26,1996.0,2018.0,22.0
