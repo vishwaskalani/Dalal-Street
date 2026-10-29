@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Jyoti Resins,JYOTIRES,/company/JYOTIRES/,863.75,1034.92,Oct 2026,Sep 2026,True,54.75,54.75,0.0,0.06,0.06,0.0,0.14,0.14,0.0,,,,45.05,45.04,-0.01,43527.0,43527.0,0.0
