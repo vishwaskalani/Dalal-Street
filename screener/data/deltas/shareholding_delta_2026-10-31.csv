@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Persistent Systems,PERSISTENT,/company/PERSISTENT/consolidated/,6048.00,100467.25,Oct 2026,Sep 2026,True,30.29,28.82,-1.47,20.79,21.3,0.51,31.96,34.04,2.08,,,,16.39,15.09,-1.3,250872.0,242461.0,-8411.0
