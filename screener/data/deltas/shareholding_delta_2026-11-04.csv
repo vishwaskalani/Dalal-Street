@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Baazar Style,STYLEBAAZA,/company/STYLEBAAZA/,359.20,2735.63,Oct 2026,Sep 2026,True,35.99,35.08,-0.91,2.23,0.84,-1.39,1.32,1.1,-0.22,,,,60.45,62.98,2.53,52535.0,52734.0,199.0
