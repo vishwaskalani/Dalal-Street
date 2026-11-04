@@ -1,0 +1,3 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Jio Financial,JIOFIN,/company/JIOFIN/consolidated/,222.27,152516.97,Oct 2026,Sep 2026,True,49.13,50.99,1.86,10.65,10.0,-0.65,13.3,12.73,-0.57,0.18,0.17,-0.01,26.74,26.11,-0.63,4972662.0,5011660.0,38998.0
+Sammaan Capital,SAMMAANCAP,/company/SAMMAANCAP/consolidated/,125.98,15725.18,Oct 2026,Sep 2026,True,28.34,33.32,4.98,21.34,19.5,-1.84,4.13,3.84,-0.29,0.05,0.05,0.0,44.78,42.02,-2.76,398915.0,399279.0,364.0
