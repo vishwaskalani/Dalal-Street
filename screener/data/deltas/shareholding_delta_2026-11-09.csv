@@ -1,0 +1,3 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Kiri Industries,KIRIINDUS,/company/KIRIINDUS/consolidated/,505.25,3291.95,Nov 2026,Sep 2026,True,41.71,41.71,0.0,16.59,16.59,0.0,1.47,1.47,0.0,,,,40.22,40.22,0.0,41041.0,41041.0,0.0
+Transport Corp.,TCI,/company/TCI/consolidated/,866.20,6515.90,Oct 2026,Sep 2026,True,68.66,70.09,1.43,3.04,2.8,-0.24,13.07,12.42,-0.65,,,,15.22,14.68,-0.54,49299.0,48689.0,-610.0
