@@ -1,0 +1,3 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Manaksia Coated,MANAKCOAT,/company/MANAKCOAT/consolidated/,165.89,1768.95,Nov 2026,Sep 2026,True,57.78,51.93,-5.85,0.19,5.71,5.52,0.59,5.31,4.72,,,,41.45,37.05,-4.4,28465.0,27725.0,-740.0
+Ola Electric,OLAELEC,/company/OLAELEC/consolidated/,34.43,17210.46,Nov 2026,Sep 2026,True,32.96,32.49,-0.47,4.73,4.56,-0.17,11.75,13.21,1.46,,,,46.04,45.56,-0.48,1910580.0,1908172.0,-2408.0
