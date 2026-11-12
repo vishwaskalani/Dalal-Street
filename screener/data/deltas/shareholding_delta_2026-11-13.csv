@@ -1,0 +1,3 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Concord Biotech,CONCORDBIO,/company/CONCORDBIO/,601.80,12591.61,Nov 2026,Sep 2026,True,44.09,44.09,0.0,7.28,7.33,0.05,10.95,11.02,0.07,,,,37.68,37.58,-0.1,88365.0,91337.0,2972.0
+Centrum Capital,CENTRUM,/company/CENTRUM/consolidated/,20.31,1012.49,Oct 2026,Sep 2026,True,39.44,40.86,1.42,1.24,1.21,-0.03,1.64,1.43,-0.21,,,,55.24,54.11,-1.13,35495.0,35550.0,55.0
