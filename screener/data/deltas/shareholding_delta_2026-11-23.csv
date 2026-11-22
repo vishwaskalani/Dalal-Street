@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Urban Company,URBANCO,/company/URBANCO/consolidated/,168.95,26055.14,Nov 2026,Sep 2026,True,19.02,17.23,-1.79,52.51,50.54,-1.97,15.17,20.12,4.95,,,,9.44,9.21,-0.23,189572.0,190894.0,1322.0
