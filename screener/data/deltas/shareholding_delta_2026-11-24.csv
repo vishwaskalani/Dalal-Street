@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Aimtron,AIMTRON,/company/AIMTRON/consolidated/,1759.90,3744.10,Nov 2026,Sep 2026,True,68.07,64.21,-3.86,0.33,0.21,-0.12,2.86,8.64,5.78,,,,28.74,26.95,-1.79,5886.0,6016.0,130.0
