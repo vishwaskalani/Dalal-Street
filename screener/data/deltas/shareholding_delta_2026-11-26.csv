@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Simplex Infra,SIMPLEXINF,/company/SIMPLEXINF/consolidated/,295.40,2414.17,Nov 2026,Sep 2026,True,35.99,36.95,0.96,0.49,0.61,0.12,6.59,6.46,-0.13,,,,56.92,55.96,-0.96,14695.0,14442.0,-253.0
