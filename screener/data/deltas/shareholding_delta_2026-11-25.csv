@@ -1,0 +1,3 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+Paisalo Digital,PAISALO,/company/PAISALO/consolidated/,73.24,6885.01,Nov 2026,Sep 2026,True,46.51,44.35,-2.16,7.37,7.01,-0.36,5.89,5.65,-0.24,,,,40.22,42.98,2.76,80099.0,76306.0,-3793.0
+VRL Logistics,VRLLOG,/company/VRLLOG/,336.55,5593.02,Nov 2026,Sep 2026,True,60.24,63.41,3.17,3.69,4.49,0.8,24.5,21.52,-2.98,,,,11.56,10.58,-0.98,77635.0,78347.0,712.0
