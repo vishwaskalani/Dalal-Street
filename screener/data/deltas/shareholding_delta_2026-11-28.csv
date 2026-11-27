@@ -1,0 +1,2 @@
+name,ticker,url,cmp,market_cap,latest_quarter,prev_quarter,is_fresh,promoter_prev,promoter_latest,promoter_change,fii_prev,fii_latest,fii_change,dii_prev,dii_latest,dii_change,government_prev,government_latest,government_change,public_prev,public_latest,public_change,shareholders_prev,shareholders_latest,shareholders_change
+AGI Infra,AGIIL,/company/AGIIL/consolidated/,317.15,4293.41,Nov 2026,Sep 2026,True,71.29,65.83,-5.46,0.92,5.23,4.31,0.05,3.58,3.53,,,,27.74,25.37,-2.37,15315.0,13554.0,-1761.0
